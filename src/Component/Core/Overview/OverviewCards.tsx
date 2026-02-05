@@ -1,14 +1,6 @@
 import StatCard from './StatCard';
-
-// Interface matching API response structure
-export interface OverviewCardData {
-  title: string;
-  value: string;
-  subtitle: string;
-  subtitleColor?: string;
-  iconColor: string;
-  iconType: string; // Icon identifier (will be used to render appropriate icon)
-}
+import { useOverviewSummaryCards } from '../../../hooks/queries';
+import type { OverviewCardData } from '../../../api/services/overview.service';
 
 // Icon mapping function - converts iconType to React component
 const getIconComponent = (iconType: string) => {
@@ -45,56 +37,30 @@ const getIconComponent = (iconType: string) => {
   return iconMap[iconType] || iconMap.students; // Default fallback
 };
 
-// Dummy data array - This structure matches API response format
-// In future, replace this with API call: const [cardsData, setCardsData] = useState<OverviewCardData[]>([]);
-const dummyOverviewCardsData: OverviewCardData[] = [
-  {
-    title: "Students on Campus",
-    value: "369",
-    subtitle: "across all spaces",
-    iconColor: "bg-orange-500/20 text-orange-500",
-    iconType: "students"
-  },
-  {
-    title: "Staff Present",
-    value: "45",
-    subtitle: "16% of total",
-    subtitleColor: "text-green-400",
-    iconColor: "bg-purple-500/20 text-purple-500",
-    iconType: "staff"
-  },
-  {
-    title: "Active Events",
-    value: "68",
-    subtitle: "detected today",
-    subtitleColor: "text-red-400",
-    iconColor: "bg-red-500/20 text-red-500",
-    iconType: "events"
-  },
-  {
-    title: "Space Utilization",
-    value: "67%",
-    subtitle: "1 underutilized",
-    subtitleColor: "text-green-400",
-    iconColor: "bg-blue-500/20 text-blue-500",
-    iconType: "utilization"
-  },
-  {
-    title: "Gate Entries Today",
-    value: "2602",
-    subtitle: "3 gates need coverage",
-    subtitleColor: "text-red-400",
-    iconColor: "bg-green-500/20 text-green-500",
-    iconType: "gateEntries"
-  }
-];
-
 function OverviewCards() {
-  // In future, replace dummy data with API call:
-  // const [cardsData, setCardsData] = useState<OverviewCardData[]>([]);
-  // useEffect(() => { fetchOverviewCards().then(setCardsData); }, []);
-  
-  const cardsData = dummyOverviewCardsData; // Replace with API data when ready
+  const { data, isLoading, isError } = useOverviewSummaryCards();
+  const cardsData: OverviewCardData[] = data ?? [];
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mt-6">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div
+            key={index}
+            className="bg-gray-800 rounded-lg p-4 animate-pulse h-28"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="mt-6 text-red-400 text-sm">
+        Failed to load overview summary cards.
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mt-6">

@@ -3,19 +3,11 @@
 // Replace this import with: import { Bar } from 'react-chartjs-2';
 import { Link } from 'react-router-dom';
 import { Bar } from './chart-stubs';
-
-// Interface matching API response structure
-export interface CleaningComplianceData {
-  zone: string;
-  score: number;
-}
-
-interface CleaningComplianceChartProps {
-  data?: CleaningComplianceData[];
-}
+import { useOverviewCleaningCompliance } from '../../../hooks/queries';
+import type { CleaningCompliancePoint } from '../../../api/services/overview.service';
 
 // Dummy data array - This structure matches API response format
-const dummyCleaningData: CleaningComplianceData[] = [
+const dummyCleaningData: CleaningCompliancePoint[] = [
   { zone: "Building A", score: 93 },
   { zone: "Building B", score: 88 },
   { zone: "Cafeteria", score: 91 },
@@ -23,13 +15,15 @@ const dummyCleaningData: CleaningComplianceData[] = [
   { zone: "Sports Complex", score: 85 }
 ];
 
-function CleaningComplianceChart({ data = dummyCleaningData }: CleaningComplianceChartProps) {
+function CleaningComplianceChart() {
+  const { data, isLoading, isError } = useOverviewCleaningCompliance();
+  const cleaningData: CleaningCompliancePoint[] = data ?? dummyCleaningData;
   const chartData = {
-    labels: data.map(item => item.zone),
+    labels: cleaningData.map(item => item.zone),
     datasets: [
       {
         label: 'Compliance Score',
-        data: data.map(item => item.score),
+        data: cleaningData.map(item => item.score),
         backgroundColor: 'rgba(34, 197, 94, 0.8)', // green-500
         borderColor: 'rgba(34, 197, 94, 1)',
         borderWidth: 0,
@@ -110,7 +104,15 @@ function CleaningComplianceChart({ data = dummyCleaningData }: CleaningComplianc
         </a></Link>
       </div>
       <div className="h-64 mt-4">
-        <Bar data={chartData} options={options} />
+        {isLoading && (
+          <div className="h-full w-full bg-gray-700/60 rounded-lg animate-pulse" />
+        )}
+        {isError && !isLoading && (
+          <p className="text-sm text-red-400">
+            Failed to load cleaning compliance data.
+          </p>
+        )}
+        {!isLoading && !isError && <Bar data={chartData} options={options} />}
       </div>
     </div>
   );

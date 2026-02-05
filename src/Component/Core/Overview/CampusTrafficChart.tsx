@@ -3,20 +3,11 @@
 // Replace this import with: import { Line } from 'react-chartjs-2';
 import { Link } from 'react-router-dom';
 import { Line } from './chart-stubs';
-
-// Interface matching API response structure
-export interface TrafficDataPoint {
-  time: string;
-  primary: number;
-  secondary: number;
-}
-
-interface CampusTrafficChartProps {
-  data?: TrafficDataPoint[];
-}
+import { useOverviewCampusTraffic } from '../../../hooks/queries';
+import type { CampusTrafficPoint } from '../../../api/services/overview.service';
 
 // Dummy data array - This structure matches API response format
-const dummyTrafficData: TrafficDataPoint[] = [
+const dummyTrafficData: CampusTrafficPoint[] = [
   { time: "6AM", primary: 200, secondary: 50 },
   { time: "7AM", primary: 400, secondary: 80 },
   { time: "8AM", primary: 800, secondary: 120 },
@@ -30,13 +21,16 @@ const dummyTrafficData: TrafficDataPoint[] = [
   { time: "4PM", primary: 600, secondary: 80 }
 ];
 
-function CampusTrafficChart({ data = dummyTrafficData }: CampusTrafficChartProps) {
+function CampusTrafficChart() {
+  const { data, isLoading, isError } = useOverviewCampusTraffic();
+  const trafficData: CampusTrafficPoint[] = data ?? dummyTrafficData;
+
   const chartData = {
-    labels: data.map(item => item.time),
+    labels: trafficData.map(item => item.time),
     datasets: [
       {
         label: 'Primary Traffic',
-        data: data.map(item => item.primary),
+        data: trafficData.map(item => item.primary),
         borderColor: 'rgb(251, 146, 60)', // orange-500
         backgroundColor: 'rgba(251, 146, 60, 0.1)',
         fill: true,
@@ -46,7 +40,7 @@ function CampusTrafficChart({ data = dummyTrafficData }: CampusTrafficChartProps
       },
       {
         label: 'Secondary Traffic',
-        data: data.map(item => item.secondary),
+        data: trafficData.map(item => item.secondary),
         borderColor: 'rgb(168, 85, 247)', // purple-500
         backgroundColor: 'rgba(168, 85, 247, 0.1)',
         fill: true,
@@ -121,7 +115,13 @@ function CampusTrafficChart({ data = dummyTrafficData }: CampusTrafficChartProps
         </a></Link>
       </div>
       <div className="h-64 mt-4">
-        <Line data={chartData} options={options} />
+        {isLoading && (
+          <div className="h-full w-full bg-gray-700/60 rounded-lg animate-pulse" />
+        )}
+        {isError && !isLoading && (
+          <p className="text-sm text-red-400">Failed to load campus traffic.</p>
+        )}
+        {!isLoading && !isError && <Line data={chartData} options={options} />}
       </div>
     </div>
   );

@@ -3,18 +3,11 @@
 // Replace this import with: import { Bar } from 'react-chartjs-2';
 import { Bar } from './chart-stubs';
 import { Link } from 'react-router-dom';
-// Interface matching API response structure
-export interface EventTypeData {
-  type: string;
-  count: number;
-}
-
-interface EventsByTypeChartProps {
-  data?: EventTypeData[];
-}
+import { useOverviewEventsByType } from '../../../hooks/queries';
+import type { EventsByTypePoint } from '../../../api/services/overview.service';
 
 // Dummy data array - This structure matches API response format
-const dummyEventsData: EventTypeData[] = [
+const dummyEventsData: EventsByTypePoint[] = [
   { type: "Running", count: 28 },
   { type: "Crowd Gathering", count: 17 },
   { type: "Overcrowding", count: 11 },
@@ -22,13 +15,15 @@ const dummyEventsData: EventTypeData[] = [
   { type: "Unauthorized Access", count: 5 }
 ];
 
-function EventsByTypeChart({ data = dummyEventsData }: EventsByTypeChartProps) {
+function EventsByTypeChart() {
+  const { data, isLoading, isError } = useOverviewEventsByType();
+  const eventsData: EventsByTypePoint[] = data ?? dummyEventsData;
   const chartData = {
-    labels: data.map(item => item.type),
+    labels: eventsData.map(item => item.type),
     datasets: [
       {
         label: 'Events',
-        data: data.map(item => item.count),
+        data: eventsData.map(item => item.count),
         backgroundColor: 'rgba(55, 65, 81, 0.8)', // gray-700
         borderColor: 'rgba(75, 85, 99, 1)', // gray-600
         borderWidth: 1,
@@ -100,7 +95,13 @@ function EventsByTypeChart({ data = dummyEventsData }: EventsByTypeChartProps) {
         </a></Link>
       </div>
       <div className="h-64 mt-4">
-        <Bar data={chartData} options={options} />
+        {isLoading && (
+          <div className="h-full w-full bg-gray-700/60 rounded-lg animate-pulse" />
+        )}
+        {isError && !isLoading && (
+          <p className="text-sm text-red-400">Failed to load events by type.</p>
+        )}
+        {!isLoading && !isError && <Bar data={chartData} options={options} />}
       </div>
     </div>
   );

@@ -1,16 +1,6 @@
 import PatternCard from './PatternCard';
-
-// Interface matching API response structure
-export interface PatternData {
-  title: string;
-  badge: string;
-  badgeColor: string;
-  description: string;
-  timeAgo: string;
-  iconType: string;
-  borderColor: string;
-  path: string;
-}
+import { useOverviewAiPatterns } from '../../../hooks/queries';
+import type { AIPatternData } from '../../../api/services/overview.service';
 
 // Icon mapping function
 const getPatternIcon = (iconType: string, color: string) => {
@@ -35,46 +25,9 @@ const getPatternIcon = (iconType: string, color: string) => {
   return iconMap[iconType] || iconMap.occupancy;
 };
 
-// Dummy data array - This structure matches API response format
-const dummyPatternsData: PatternData[] = [
-  {
-    title: "Main Cafeteria",
-    badge: "HIGH",
-    badgeColor: "bg-red-500",
-    description: "Occupancy at 98% capacity",
-    timeAgo: "2 min ago",
-    iconType: "occupancy",
-    borderColor: "border-red-500",
-    path: "/student-distribution"
-  },
-  {
-    title: "Building B Entrance",
-    badge: "MEDIUM",
-    badgeColor: "bg-orange-500",
-    description: "No security guard coverage",
-    timeAgo: "8 min ago",
-    iconType: "security",
-    borderColor: "border-orange-500",
-    path: "/access-control"
-  },
-  {
-    title: "Corridor A-Main",
-    badge: "LOW",
-    badgeColor: "bg-blue-500",
-    description: "High usage, cleaning recommended",
-    timeAgo: "15 min ago",
-    iconType: "activity",
-    borderColor: "border-blue-500",
-    path: "/cleaning-hygiene"
-  }
-];
-
 function AIDetectedPatterns() {
-  // In future, replace dummy data with API call:
-  // const [patternsData, setPatternsData] = useState<PatternData[]>([]);
-  // useEffect(() => { fetchPatterns().then(setPatternsData); }, []);
-  
-  const patternsData = dummyPatternsData; // Replace with API data when ready
+  const { data, isLoading, isError } = useOverviewAiPatterns();
+  const patternsData: AIPatternData[] = data ?? [];
   const activeCount = patternsData.length;
 
   return (
@@ -94,7 +47,24 @@ function AIDetectedPatterns() {
 
       {/* Patterns List */}
       <div className="space-y-3">
-        {patternsData.map((pattern, index) => (
+        {isLoading && (
+          <div className="space-y-3">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-16 bg-gray-700/60 rounded-lg animate-pulse"
+              />
+            ))}
+          </div>
+        )}
+
+        {isError && !isLoading && (
+          <p className="text-sm text-red-400">
+            Failed to load AI detected patterns.
+          </p>
+        )}
+
+        {!isLoading && !isError && patternsData.map((pattern, index) => (
           <PatternCard
             key={index}
             title={pattern.title}

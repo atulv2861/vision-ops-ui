@@ -12,7 +12,7 @@ interface DetectionEventCardProps {
   personName?: string;
 }
 
-function DetectionEventCard({ data, personName }: DetectionEventCardProps) {
+function DetectionEventCard({ data }: DetectionEventCardProps) {
   return (
     <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 flex items-center gap-4">
       {/* Visual Evidence Placeholder */}

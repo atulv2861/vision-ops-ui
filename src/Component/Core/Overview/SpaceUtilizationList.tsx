@@ -1,20 +1,9 @@
 import { Link } from "react-router-dom";
-
-// Interface matching API response structure
-export interface SpaceUtilizationData {
-  name: string;
-  type: string;
-  occupancy: number;
-  capacity: number;
-  percentage: number;
-}
-
-interface SpaceUtilizationListProps {
-  data?: SpaceUtilizationData[];
-}
+import { useOverviewSpaceUtilization } from "../../../hooks/queries";
+import type { SpaceUtilizationPoint } from "../../../api/services/overview.service";
 
 // Dummy data array - This structure matches API response format
-const dummySpaceData: SpaceUtilizationData[] = [
+const dummySpaceData: SpaceUtilizationPoint[] = [
   { name: "Classroom A101", type: "classroom", occupancy: 29, capacity: 30, percentage: 93 },
   { name: "Classroom A102", type: "classroom", occupancy: 16, capacity: 30, percentage: 50 },
   { name: "Building A - Main Corridor", type: "corridor", occupancy: 51, capacity: 80, percentage: 64 },
@@ -22,7 +11,9 @@ const dummySpaceData: SpaceUtilizationData[] = [
   { name: "Library Reading Area", type: "library", occupancy: 43, capacity: 60, percentage: 70 }
 ];
 
-function SpaceUtilizationList({ data = dummySpaceData }: SpaceUtilizationListProps) {
+function SpaceUtilizationList() {
+  const { data, isLoading, isError } = useOverviewSpaceUtilization();
+  const spaceData: SpaceUtilizationPoint[] = data ?? dummySpaceData;
   const getBadgeColor = (percentage: number) => {
     if (percentage >= 90) return "bg-green-500";
     if (percentage >= 50) return "bg-orange-500";
@@ -50,7 +41,24 @@ function SpaceUtilizationList({ data = dummySpaceData }: SpaceUtilizationListPro
         </a></Link>
       </div>
       <div className="space-y-4 mt-6">
-        {data.map((space, index) => (
+        {isLoading && (
+          <div className="space-y-3">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-12 bg-gray-700/60 rounded-lg animate-pulse"
+              />
+            ))}
+          </div>
+        )}
+
+        {isError && !isLoading && (
+          <p className="text-sm text-red-400">
+            Failed to load space utilization data.
+          </p>
+        )}
+
+        {!isLoading && !isError && spaceData.map((space, index) => (
           <div key={index} className="space-y-2">
             <div className="flex items-center justify-between">
               <div>

@@ -1,18 +1,9 @@
 import { Link } from "react-router-dom";
-
-// Interface matching API response structure
-export interface CameraNetworkData {
-  location: string;
-  activeCameras: number;
-  status: 'online' | 'offline' | 'maintenance';
-}
-
-interface CameraNetworkStatusProps {
-  data?: CameraNetworkData[];
-}
+import { useOverviewCameraNetworkStatus } from "../../../hooks/queries";
+import type { CameraNetworkPoint } from "../../../api/services/overview.service";
 
 // Dummy data array - This structure matches API response format
-const dummyCameraData: CameraNetworkData[] = [
+const dummyCameraData: CameraNetworkPoint[] = [
   { location: "Main Gate", activeCameras: 2, status: "online" },
   { location: "Building A", activeCameras: 4, status: "online" },
   { location: "Building B", activeCameras: 3, status: "online" },
@@ -24,7 +15,23 @@ const dummyCameraData: CameraNetworkData[] = [
   { location: "Administrative Block", activeCameras: 2, status: "online" }
 ];
 
-function CameraNetworkStatus({ data = dummyCameraData }: CameraNetworkStatusProps) {
+function CameraNetworkStatus() {
+  const { data, isLoading, isError } = useOverviewCameraNetworkStatus();
+  const cameraData: CameraNetworkPoint[] = data ?? dummyCameraData;
+
+  const getStatusColor = (status: CameraNetworkPoint['status']) => {
+    switch (status) {
+      case 'online':
+        return 'text-green-500';
+      case 'offline':
+        return 'text-red-500';
+      case 'maintenance':
+        return 'text-yellow-400';
+      default:
+        return 'text-gray-400';
+    }
+  };
+
   return (
     <div className="bg-gray-800 rounded-lg p-6">
       <div className="flex items-start justify-between mb-4">
@@ -40,7 +47,24 @@ function CameraNetworkStatus({ data = dummyCameraData }: CameraNetworkStatusProp
         </a></Link>
       </div>
       <div className="space-y-3 mt-6 max-h-96 overflow-y-auto scrollbar-hide">
-        {data.map((camera, index) => (
+        {isLoading && (
+          <div className="space-y-3">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-12 bg-gray-700/60 rounded-lg animate-pulse"
+              />
+            ))}
+          </div>
+        )}
+
+        {isError && !isLoading && (
+          <p className="text-sm text-red-400">
+            Failed to load camera network status.
+          </p>
+        )}
+
+        {!isLoading && !isError && cameraData.map((camera, index) => (
           <div
             key={index}
             className="bg-gray-700/50 rounded-lg p-4 flex items-center justify-between border border-gray-600/50"
@@ -57,8 +81,16 @@ function CameraNetworkStatus({ data = dummyCameraData }: CameraNetworkStatusProp
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full" />
-              <span className="text-green-500 text-sm font-medium">Online</span>
+              <div className={`w-2 h-2 rounded-full ${
+                camera.status === 'online'
+                  ? 'bg-green-500'
+                  : camera.status === 'offline'
+                  ? 'bg-red-500'
+                  : 'bg-yellow-400'
+              }`} />
+              <span className={`${getStatusColor(camera.status)} text-sm font-medium`}>
+                {camera.status.charAt(0).toUpperCase() + camera.status.slice(1)}
+              </span>
             </div>
           </div>
         ))}

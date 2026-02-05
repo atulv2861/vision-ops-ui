@@ -1,19 +1,9 @@
 import { Link } from "react-router-dom";
-
-// Interface matching API response structure
-export interface SecurityAccessData {
-  name: string;
-  guardsPresent: number;
-  guardsNeeded: number;
-  status: 'covered' | 'low-coverage' | 'uncovered';
-}
-
-interface SecurityAccessControlProps {
-  data?: SecurityAccessData[];
-}
+import { useOverviewSecurityAccess } from "../../../hooks/queries";
+import type { SecurityAccessPoint } from "../../../api/services/overview.service";
 
 // Dummy data array - This structure matches API response format
-const dummySecurityData: SecurityAccessData[] = [
+const dummySecurityData: SecurityAccessPoint[] = [
   { name: "Main Gate", guardsPresent: 2, guardsNeeded: 2, status: "covered" },
   { name: "Building A Entrance", guardsPresent: 1, guardsNeeded: 1, status: "covered" },
   { name: "Building B Entrance", guardsPresent: 0, guardsNeeded: 1, status: "uncovered" },
@@ -21,7 +11,9 @@ const dummySecurityData: SecurityAccessData[] = [
   { name: "Sports Complex Entrance", guardsPresent: 1, guardsNeeded: 1, status: "covered" }
 ];
 
-function SecurityAccessControl({ data = dummySecurityData }: SecurityAccessControlProps) {
+function SecurityAccessControl() {
+  const { data, isLoading, isError } = useOverviewSecurityAccess();
+  const securityData: SecurityAccessPoint[] = data ?? dummySecurityData;
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'covered':
@@ -50,7 +42,24 @@ function SecurityAccessControl({ data = dummySecurityData }: SecurityAccessContr
         </a></Link>
       </div>
       <div className="space-y-4 mt-6">
-        {data.map((gate, index) => {
+        {isLoading && (
+          <div className="space-y-3">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-12 bg-gray-700/60 rounded-lg animate-pulse"
+              />
+            ))}
+          </div>
+        )}
+
+        {isError && !isLoading && (
+          <p className="text-sm text-red-400">
+            Failed to load security access data.
+          </p>
+        )}
+
+        {!isLoading && !isError && securityData.map((gate, index) => {
           const colors = getStatusColor(gate.status);
           // Calculate coverage percentage
           const coveragePercentage = gate.guardsNeeded > 0 

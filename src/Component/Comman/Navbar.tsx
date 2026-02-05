@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useAppContext } from '../../Context/AppContext';
 
 function Navbar() {
-  const { isSidebarCollapsed } = useAppContext();
+  const { isSidebarCollapsed, setGlobalFilterData } = useAppContext();
   const [locationOpen, setLocationOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
@@ -153,6 +153,7 @@ function Navbar() {
                   key={location}
                   onClick={() => {
                     setSelectedLocation(location);
+                    setGlobalFilterData((prev) => ({ ...prev, Location: location }));
                     setLocationOpen(false);
                   }}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
@@ -200,6 +201,7 @@ function Navbar() {
                       setDateOpen(false);
                     } else {
                       setSelectedDate(date);
+                      setGlobalFilterData((prev) => ({ ...prev, Date: date }));
                       setShowCustomCalendar(false);
                       setDateOpen(false);
                     }
@@ -244,7 +246,9 @@ function Navbar() {
                       const end = new Date(customEndDate);
                       const formattedStart = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                       const formattedEnd = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                      setSelectedDate(`${formattedStart} - ${formattedEnd}`);
+                      const dateRange = `${formattedStart} - ${formattedEnd}`;
+                      setSelectedDate(dateRange);
+                      setGlobalFilterData((prev) => ({ ...prev, Date: dateRange }));
                       setShowCustomCalendar(false);
                     }
                   }}
@@ -299,6 +303,10 @@ function Navbar() {
                   key={camera}
                   onClick={() => {
                     setSelectedCamera(camera);
+                    setGlobalFilterData((prev) => ({
+                      ...prev,
+                      CameraList: camera === 'All Cameras' ? [] : [camera],
+                    }));
                     setCameraOpen(false);
                   }}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
@@ -313,7 +321,7 @@ function Navbar() {
         </div>
 
         {/* Filters Button */}
-        <button className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors">
+        <button className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors border border-gray-600">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
           </svg>
