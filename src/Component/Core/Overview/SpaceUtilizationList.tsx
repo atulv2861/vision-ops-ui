@@ -13,7 +13,8 @@ const dummySpaceData: SpaceUtilizationPoint[] = [
 
 function SpaceUtilizationList() {
   const { data, isLoading, isError } = useOverviewSpaceUtilization();
-  const spaceData: SpaceUtilizationPoint[] = data ?? dummySpaceData;
+  const spaceData: SpaceUtilizationPoint[] =
+    data != null && !isError ? data : dummySpaceData;
   const getBadgeColor = (percentage: number) => {
     if (percentage >= 90) return "bg-green-500";
     if (percentage >= 50) return "bg-orange-500";
@@ -53,12 +54,10 @@ function SpaceUtilizationList() {
         )}
 
         {isError && !isLoading && (
-          <p className="text-sm text-red-400">
-            Failed to load space utilization data.
-          </p>
+          <p className="text-xs text-amber-400 mb-2">Showing sample data (API unavailable).</p>
         )}
 
-        {!isLoading && !isError && spaceData.map((space, index) => (
+        {!isLoading && spaceData.map((space, index) => (
           <div key={index} className="space-y-2">
             <div className="flex items-center justify-between">
               <div>

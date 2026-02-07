@@ -13,7 +13,8 @@ const dummySecurityData: SecurityAccessPoint[] = [
 
 function SecurityAccessControl() {
   const { data, isLoading, isError } = useOverviewSecurityAccess();
-  const securityData: SecurityAccessPoint[] = data ?? dummySecurityData;
+  const securityData: SecurityAccessPoint[] =
+    data != null && !isError ? data : dummySecurityData;
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'covered':
@@ -54,12 +55,10 @@ function SecurityAccessControl() {
         )}
 
         {isError && !isLoading && (
-          <p className="text-sm text-red-400">
-            Failed to load security access data.
-          </p>
+          <p className="text-xs text-amber-400 mb-2">Showing sample data (API unavailable).</p>
         )}
 
-        {!isLoading && !isError && securityData.map((gate, index) => {
+        {!isLoading && securityData.map((gate, index) => {
           const colors = getStatusColor(gate.status);
           // Calculate coverage percentage
           const coveragePercentage = gate.guardsNeeded > 0 

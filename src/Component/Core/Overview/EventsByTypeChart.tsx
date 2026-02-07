@@ -1,83 +1,67 @@
-// Temporary: Using stub until packages are installed
-// After running: npm install react-chartjs-2 chart.js
-// Replace this import with: import { Bar } from 'react-chartjs-2';
-import { Bar } from './chart-stubs';
+import ReactECharts from 'echarts-for-react';
 import { Link } from 'react-router-dom';
 import { useOverviewEventsByType } from '../../../hooks/queries';
 import type { EventsByTypePoint } from '../../../api/services/overview.service';
 
-// Dummy data array - This structure matches API response format
 const dummyEventsData: EventsByTypePoint[] = [
-  { type: "Running", count: 28 },
-  { type: "Crowd Gathering", count: 17 },
-  { type: "Overcrowding", count: 11 },
-  { type: "Loitering", count: 8 },
-  { type: "Unauthorized Access", count: 5 }
+  { type: 'Running', count: 28 },
+  { type: 'Crowd Gathering', count: 17 },
+  { type: 'Overcrowding', count: 11 },
+  { type: 'Loitering', count: 8 },
+  { type: 'Unauthorized Access', count: 5 },
 ];
 
 function EventsByTypeChart() {
   const { data, isLoading, isError } = useOverviewEventsByType();
-  const eventsData: EventsByTypePoint[] = data ?? dummyEventsData;
-  const chartData = {
-    labels: eventsData.map(item => item.type),
-    datasets: [
-      {
-        label: 'Events',
-        data: eventsData.map(item => item.count),
-        backgroundColor: 'rgba(55, 65, 81, 0.8)', // gray-700
-        borderColor: 'rgba(75, 85, 99, 1)', // gray-600
-        borderWidth: 1,
-        borderRadius: 4
-      }
-    ]
-  };
+  const eventsData: EventsByTypePoint[] =
+    data != null && !isError ? data : dummyEventsData;
 
-  const options = {
-    indexAxis: 'y' as const,
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false
-      },
-      tooltip: {
-        backgroundColor: 'rgba(31, 41, 55, 0.95)',
-        titleColor: '#fff',
-        bodyColor: '#fff',
-        borderColor: 'rgba(255, 255, 255, 0.1)',
-        borderWidth: 1,
-        padding: 12
-      }
+  const option = {
+    tooltip: {
+      trigger: 'axis' as const,
+      backgroundColor: 'rgba(31, 41, 55, 0.95)',
+      borderColor: 'rgba(255, 255, 255, 0.1)',
+      textStyle: { color: '#fff' },
     },
-    scales: {
-      x: {
-        beginAtZero: true,
-        max: 28,
-        ticks: {
-          stepSize: 7,
-          color: '#9CA3AF',
-          font: {
-            size: 11
-          }
+    grid: {
+      left: '15%',
+      right: '8%',
+      bottom: '3%',
+      top: '5%',
+      containLabel: true,
+    },
+    xAxis: {
+      type: 'value' as const,
+      min: 0,
+      max: 28,
+      interval: 7,
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: { color: '#9CA3AF', fontSize: 11 },
+      splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.05)' } },
+    },
+    yAxis: {
+      type: 'category' as const,
+      data: eventsData.map((item) => item.type),
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: { color: '#9CA3AF', fontSize: 11 },
+      inverse: true,
+    },
+    series: [
+      {
+        name: 'Events',
+        type: 'bar' as const,
+        data: eventsData.map((item) => item.count),
+        itemStyle: {
+          color: 'rgba(55, 65, 81, 0.9)',
+          borderColor: 'rgba(75, 85, 99, 1)',
+          borderWidth: 1,
         },
-        grid: {
-          color: 'rgba(255, 255, 255, 0.05)',
-          drawBorder: false
-        }
+        barWidth: '60%',
+        barMaxWidth: 24,
       },
-      y: {
-        ticks: {
-          color: '#9CA3AF',
-          font: {
-            size: 11
-          }
-        },
-        grid: {
-          display: false,
-          drawBorder: false
-        }
-      }
-    }
+    ],
   };
 
   return (
@@ -87,21 +71,28 @@ function EventsByTypeChart() {
           <h3 className="text-white text-lg font-semibold mb-1">Events by Type</h3>
           <p className="text-gray-400 text-sm">Detected activities today</p>
         </div>
-       <Link to="/events"> <a href="#" className="text-blue-500 hover:text-blue-400 text-sm font-medium flex items-center gap-1">
+        <Link
+          to="/events"
+          className="text-blue-500 hover:text-blue-400 text-sm font-medium flex items-center gap-1"
+        >
           View All
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
-        </a></Link>
+        </Link>
       </div>
       <div className="h-64 mt-4">
         {isLoading && (
           <div className="h-full w-full bg-gray-700/60 rounded-lg animate-pulse" />
         )}
-        {isError && !isLoading && (
-          <p className="text-sm text-red-400">Failed to load events by type.</p>
+        {!isLoading && (
+          <>
+            {isError && (
+              <p className="text-xs text-amber-400 mb-2">Showing sample data (API unavailable).</p>
+            )}
+            <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
+          </>
         )}
-        {!isLoading && !isError && <Bar data={chartData} options={options} />}
       </div>
     </div>
   );
