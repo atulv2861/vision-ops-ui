@@ -1,14 +1,21 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
-import StatCard from './StatCard';
+import StatCard, { type StatCardIconColor } from './StatCard';
 import { useOverviewSummaryCards } from '../../../hooks/queries';
 import type { OverviewCardData } from '../../../api/services/overview.service';
 
 const AUTO_SCROLL_SPEED = 1;
 const AUTO_SCROLL_INTERVAL_MS = 30;
 
-// Static icon for all overview cards
+const CARD_ICON_COLORS: StatCardIconColor[] = [
+  'orange',
+  'purple',
+  'red',
+  'blue',
+  'green',
+];
+
 const OverviewCardIcon = (
-  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
   </svg>
 );
@@ -92,7 +99,7 @@ function OverviewCards() {
           {Array.from({ length: 5 }).map((_, index) => (
             <div
               key={index}
-              className="bg-gray-800 rounded-lg p-4 h-28 min-w-[220px] shrink-0"
+              className="bg-[#1A1A2E] rounded-xl border border-white/[0.06] h-28 min-w-[220px] shrink-0"
             />
           ))}
         </div>
@@ -129,6 +136,7 @@ function OverviewCards() {
             value={card.value}
             subtitle={card.subtitle}
             icon={OverviewCardIcon}
+            iconColor={CARD_ICON_COLORS[index % CARD_ICON_COLORS.length]}
           />
         </div>
       ))}
