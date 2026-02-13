@@ -6,7 +6,7 @@
 const BASE = {
   AUTH: '/auth',
   USER: '/user',
-  OVERVIEW: '/overview',
+  OVERVIEW: 'http://localhost:3000/api/overview',
 } as const;
 
 export const endpoints = {
@@ -21,6 +21,7 @@ export const endpoints = {
     updateProfile: () => `${BASE.USER}/profile`,
   },
   overview: {
+    overviewCards: () => `${BASE.OVERVIEW}/overview-cards`,
     summaryCards: () => `${BASE.OVERVIEW}/summary-cards`,
     aiPatterns: () => `${BASE.OVERVIEW}/ai-patterns`,
     campusTraffic: () => `${BASE.OVERVIEW}/campus-traffic`,

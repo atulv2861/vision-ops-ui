@@ -2,18 +2,20 @@ interface StatCardProps {
   title: string;
   value: string;
   subtitle: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
 }
 
-function StatCard({ title, value, subtitle, icon }: StatCardProps) {
+function StatCard({ title, value, subtitle,icon}: StatCardProps) {
   return (
     <div className="bg-gray-800 rounded-lg p-4 flex flex-col">
       {/* Header with title and icon */}
       <div className="flex items-start justify-between mb-4">
         <h3 className="text-white text-xs font-medium">{title}</h3>
-        <div className="text-blue-500 p-2 rounded-lg">
-          {icon}
-        </div>
+        {icon != null && (
+          <div className="p-2 rounded-lg text-gray-400">
+            {icon}
+          </div>
+        )}
       </div>
 
       {/* Value */}

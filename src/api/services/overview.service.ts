@@ -1,13 +1,22 @@
 import { axiosInstance } from '../axiosInstance';
 import { endpoints } from '../endpoints';
 
+/** API response shape for GET /overview/overview-cards */
+export interface OverviewCardApiResponse {
+  id: string;
+  title: string;
+  value: number;
+  subtitle: string;
+}
+
 export interface OverviewCardData {
+  id?: string;
   title: string;
   value: string;
   subtitle: string;
   subtitleColor?: string;
-  iconColor: string;
-  iconType: string;
+  iconColor?: string;
+  iconType?: string;
 }
 
 export interface AIPatternData {
@@ -60,10 +69,17 @@ export interface CameraNetworkPoint {
 
 export const overviewService = {
   async getSummaryCards(): Promise<OverviewCardData[]> {
-    const { data } = await axiosInstance.get<OverviewCardData[]>(
-      endpoints.overview.summaryCards()
+    const { data } = await axiosInstance.get<OverviewCardApiResponse[]>(
+      endpoints.overview.overviewCards()
     );
-    return data;
+    return data.map((card) => ({
+      id: card.id,
+      title: card.title,
+      value: String(card.value),
+      subtitle: card.subtitle,
+      iconColor: '',
+      iconType: '',
+    }));
   },
 
   async getAiPatterns(): Promise<AIPatternData[]> {
