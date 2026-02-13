@@ -7,13 +7,29 @@ const ICON_COLORS = {
 } as const;
 
 const SUBTITLE_COLORS = {
-  default: 'text-gray-400',
-  positive: 'text-emerald-400',
-  warning: 'text-red-400',
+  gray: 'text-gray-400',
+  green: 'text-emerald-400',
+  red: 'text-red-400',
+  blue: 'text-blue-400',
+  purple: 'text-violet-400',
+  amber: 'text-amber-400',
+  cyan: 'text-cyan-400',
+  rose: 'text-rose-400',
 } as const;
 
 export type StatCardIconColor = keyof typeof ICON_COLORS;
 export type StatCardSubtitleVariant = keyof typeof SUBTITLE_COLORS;
+
+export const SUBTITLE_VARIANTS: StatCardSubtitleVariant[] = [
+  'gray',
+  'green',
+  'red',
+  'blue',
+  'purple',
+  'amber',
+  'cyan',
+  'rose',
+];
 
 interface StatCardProps {
   title: string;
@@ -30,7 +46,7 @@ function StatCard({
   subtitle,
   icon,
   iconColor = 'blue',
-  subtitleVariant = 'default',
+  subtitleVariant = 'gray',
 }: StatCardProps) {
   return (
     <div className="bg-[#1A1A2E] rounded-xl p-4 flex flex-col min-h-[120px] border border-white/[0.06] shadow-sm">

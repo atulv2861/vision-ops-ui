@@ -1,5 +1,8 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
-import StatCard, { type StatCardIconColor } from './StatCard';
+import StatCard, {
+  type StatCardIconColor,
+  SUBTITLE_VARIANTS,
+} from './StatCard';
 import { useOverviewSummaryCards } from '../../../hooks/queries';
 import type { OverviewCardData } from '../../../api/services/overview.service';
 
@@ -137,6 +140,7 @@ function OverviewCards() {
             subtitle={card.subtitle}
             icon={OverviewCardIcon}
             iconColor={CARD_ICON_COLORS[index % CARD_ICON_COLORS.length]}
+            subtitleVariant={SUBTITLE_VARIANTS[index % SUBTITLE_VARIANTS.length]}
           />
         </div>
       ))}
