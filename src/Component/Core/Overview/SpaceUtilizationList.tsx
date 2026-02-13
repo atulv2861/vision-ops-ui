@@ -15,18 +15,6 @@ function SpaceUtilizationList() {
   const { data, isLoading, isError } = useOverviewSpaceUtilization();
   const spaceData: SpaceUtilizationPoint[] =
     data != null && !isError ? data : dummySpaceData;
-  const getBadgeColor = (percentage: number) => {
-    if (percentage >= 90) return "bg-green-500";
-    if (percentage >= 50) return "bg-orange-500";
-    return "bg-red-500";
-  };
-
-  const getBarColor = (percentage: number) => {
-    if (percentage >= 90) return "bg-green-500";
-    if (percentage >= 50) return "bg-orange-500";
-    return "bg-red-500";
-  };
-
   return (
     <div className="bg-gray-800 rounded-lg p-6">
       <div className="flex items-start justify-between mb-4">
@@ -66,14 +54,14 @@ function SpaceUtilizationList() {
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-white text-sm">{space.occupancy}/{space.capacity}</span>
-                <span className={`${getBadgeColor(space.percentage)} text-white text-xs font-medium px-2 py-1 rounded-full`}>
+                <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded-full">
                   {space.percentage}%
                 </span>
               </div>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-2">
               <div
-                className={`${getBarColor(space.percentage)} h-2 rounded-full transition-all duration-300`}
+                className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${space.percentage}%` }}
               />
             </div>

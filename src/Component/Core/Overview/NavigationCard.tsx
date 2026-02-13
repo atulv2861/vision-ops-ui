@@ -3,11 +3,10 @@ interface NavigationCardProps {
   title: string;
   value: string;
   icon: React.ReactNode;
-  borderColor?: string;
-  path:string
+  path: string;
 }
 
-function NavigationCard({ title, value, icon, borderColor ,path}: NavigationCardProps) {
+function NavigationCard({ title, value, icon, path }: NavigationCardProps) {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -15,7 +14,7 @@ function NavigationCard({ title, value, icon, borderColor ,path}: NavigationCard
   };
 
   return (
-    <div onClick={handleClick} className={`bg-gray-700 rounded-lg p-4 flex items-center justify-between hover:bg-gray-750 cursor-pointer transition-colors ${borderColor ? `border-l-4 ${borderColor}` : ''}`}>
+    <div onClick={handleClick} className="bg-gray-700 rounded-lg p-4 border-l-4 border-blue-500 flex items-center justify-between hover:bg-gray-750 cursor-pointer transition-colors">
       <div className="flex items-center gap-3 flex-1">
         {/* Icon */}
         <div>

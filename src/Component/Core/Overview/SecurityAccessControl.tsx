@@ -15,19 +15,6 @@ function SecurityAccessControl() {
   const { data, isLoading, isError } = useOverviewSecurityAccess();
   const securityData: SecurityAccessPoint[] =
     data != null && !isError ? data : dummySecurityData;
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'covered':
-        return { badge: 'bg-green-500', line: 'bg-green-500' };
-      case 'low-coverage':
-        return { badge: 'bg-orange-500', line: 'bg-orange-500' };
-      case 'uncovered':
-        return { badge: 'bg-red-500', line: 'bg-orange-500' };
-      default:
-        return { badge: 'bg-gray-500', line: 'bg-gray-500' };
-    }
-  };
-
   return (
     <div className="bg-gray-800 rounded-lg p-6">
       <div className="flex items-start justify-between mb-4">
@@ -59,8 +46,6 @@ function SecurityAccessControl() {
         )}
 
         {!isLoading && securityData.map((gate, index) => {
-          const colors = getStatusColor(gate.status);
-          // Calculate coverage percentage
           const coveragePercentage = gate.guardsNeeded > 0 
             ? (gate.guardsPresent / gate.guardsNeeded) * 100 
             : 0;
@@ -77,15 +62,14 @@ function SecurityAccessControl() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-white text-sm">{gate.guardsPresent}/{gate.guardsNeeded} guards</span>
-                  <span className={`${colors.badge} text-white text-xs font-medium px-2 py-1 rounded-full`}>
+                  <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded-full">
                     {gate.status}
                   </span>
                 </div>
               </div>
-              {/* Progress border based on coverage */}
               <div className="w-full bg-gray-700 h-2 rounded-full">
                 <div
-                  className={`${colors.line} h-2 rounded-full transition-all duration-300`}
+                  className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${coveragePercentage}%` }}
                 />
               </div>
