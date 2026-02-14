@@ -19,14 +19,25 @@ export interface OverviewCardData {
   iconType?: string;
 }
 
+/** API response shape for GET /overview/ai-patterns */
+export interface AiPatternsApiResponseItem {
+  id: string;
+  title: string;
+  description: string;
+  severity: string;
+  timestamp: string;
+  timeAgo: string;
+}
+
 export interface AIPatternData {
+  id?: string;
   title: string;
   badge: string;
-  badgeColor: string;
+  badgeColor?: string;
   description: string;
   timeAgo: string;
-  iconType: string;
-  borderColor: string;
+  iconType?: string;
+  borderColor?: string;
   path: string;
 }
 
@@ -42,6 +53,7 @@ export interface EventsByTypePoint {
 }
 
 export interface SpaceUtilizationPoint {
+  id?: string;
   name: string;
   type: string;
   occupancy: number;
@@ -50,6 +62,7 @@ export interface SpaceUtilizationPoint {
 }
 
 export interface SecurityAccessPoint {
+  id?: string;
   name: string;
   guardsPresent: number;
   guardsNeeded: number;
@@ -62,6 +75,7 @@ export interface CleaningCompliancePoint {
 }
 
 export interface CameraNetworkPoint {
+  id?: string;
   location: string;
   activeCameras: number;
   status: 'online' | 'offline' | 'maintenance';
@@ -83,10 +97,17 @@ export const overviewService = {
   },
 
   async getAiPatterns(): Promise<AIPatternData[]> {
-    const { data } = await axiosInstance.get<AIPatternData[]>(
+    const { data } = await axiosInstance.get<AiPatternsApiResponseItem[]>(
       endpoints.overview.aiPatterns()
     );
-    return data;
+    return (Array.isArray(data) ? data : []).map((item) => ({
+      id: item.id,
+      title: item.title,
+      badge: item.severity ? item.severity.toUpperCase() : 'LOW',
+      description: item.description,
+      timeAgo: item.timeAgo,
+      path: '/overview',
+    }));
   },
 
   async getCampusTraffic(): Promise<CampusTrafficPoint[]> {

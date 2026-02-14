@@ -2,22 +2,9 @@ import { Link } from "react-router-dom";
 import { useOverviewCameraNetworkStatus } from "../../../hooks/queries";
 import type { CameraNetworkPoint } from "../../../api/services/overview.service";
 
-// Dummy data array - This structure matches API response format
-const dummyCameraData: CameraNetworkPoint[] = [
-  { location: "Main Gate", activeCameras: 2, status: "online" },
-  { location: "Building A", activeCameras: 4, status: "online" },
-  { location: "Building B", activeCameras: 3, status: "online" },
-  { location: "Cafeteria", activeCameras: 3, status: "online" },
-  { location: "Library", activeCameras: 3, status: "online" },
-  { location: "Sports Complex", activeCameras: 3, status: "online" },
-  { location: "Washroom Block A", activeCameras: 1, status: "online" },
-  { location: "Washroom Block B", activeCameras: 1, status: "online" },
-  { location: "Administrative Block", activeCameras: 2, status: "online" }
-];
-
 function CameraNetworkStatus() {
   const { data, isLoading, isError } = useOverviewCameraNetworkStatus();
-  const cameraData: CameraNetworkPoint[] = data ?? dummyCameraData;
+  const cameraData: CameraNetworkPoint[] = data ?? [];
 
   return (
     <div className="bg-gray-800 rounded-lg p-6">
@@ -53,7 +40,7 @@ function CameraNetworkStatus() {
 
         {!isLoading && !isError && cameraData.map((camera, index) => (
           <div
-            key={index}
+            key={camera.id ?? index}
             className="bg-gray-700/50 rounded-lg p-4 flex items-center justify-between border border-gray-600/50"
           >
             <div className="flex items-center gap-3">

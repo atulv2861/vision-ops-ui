@@ -7,6 +7,7 @@ const BASE = {
   AUTH: '/auth',
   USER: '/user',
   OVERVIEW: 'http://localhost:3000/api/overview',
+  FILTER: 'http://localhost:3000/api/filter',
 } as const;
 
 export const endpoints = {
@@ -19,6 +20,12 @@ export const endpoints = {
   user: {
     profile: () => `${BASE.USER}/profile`,
     updateProfile: () => `${BASE.USER}/profile`,
+  },
+  filter: {
+    location: (clientId: string) =>
+      `${BASE.FILTER}/location?client_id=${clientId}`,
+    camera: (locationId: string) =>
+      `${BASE.FILTER}/camera?location_id=${locationId}`,
   },
   overview: {
     overviewCards: () => `${BASE.OVERVIEW}/overview-cards`,

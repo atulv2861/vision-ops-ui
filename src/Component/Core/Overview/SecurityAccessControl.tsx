@@ -2,19 +2,9 @@ import { Link } from "react-router-dom";
 import { useOverviewSecurityAccess } from "../../../hooks/queries";
 import type { SecurityAccessPoint } from "../../../api/services/overview.service";
 
-// Dummy data array - This structure matches API response format
-const dummySecurityData: SecurityAccessPoint[] = [
-  { name: "Main Gate", guardsPresent: 2, guardsNeeded: 2, status: "covered" },
-  { name: "Building A Entrance", guardsPresent: 1, guardsNeeded: 1, status: "covered" },
-  { name: "Building B Entrance", guardsPresent: 0, guardsNeeded: 1, status: "uncovered" },
-  { name: "Cafeteria Entrance", guardsPresent: 1, guardsNeeded: 2, status: "low-coverage" },
-  { name: "Sports Complex Entrance", guardsPresent: 1, guardsNeeded: 1, status: "covered" }
-];
-
 function SecurityAccessControl() {
   const { data, isLoading, isError } = useOverviewSecurityAccess();
-  const securityData: SecurityAccessPoint[] =
-    data != null && !isError ? data : dummySecurityData;
+  const securityData: SecurityAccessPoint[] = data ?? [];
   return (
     <div className="bg-gray-800 rounded-lg p-6">
       <div className="flex items-start justify-between mb-4">
@@ -42,16 +32,16 @@ function SecurityAccessControl() {
         )}
 
         {isError && !isLoading && (
-          <p className="text-xs text-amber-400 mb-2">Showing sample data (API unavailable).</p>
+          <p className="text-sm text-red-400">Failed to load security access.</p>
         )}
 
-        {!isLoading && securityData.map((gate, index) => {
+        {!isLoading && !isError && securityData.map((gate, index) => {
           const coveragePercentage = gate.guardsNeeded > 0 
             ? (gate.guardsPresent / gate.guardsNeeded) * 100 
             : 0;
           
           return (
-            <div key={index} className="space-y-6">
+            <div key={gate.id ?? index} className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

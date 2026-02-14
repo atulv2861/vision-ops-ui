@@ -2,6 +2,7 @@ export { useLogin } from './useLogin';
 export { useProfile } from './useProfile';
 export { useUpdateProfile } from './useUpdateProfile';
 export { queryKeys } from './queryKeys';
+export { useFilterLocations, useFilterCameras } from './filter';
 export {
   useOverviewSummaryCards,
   useOverviewAiPatterns,

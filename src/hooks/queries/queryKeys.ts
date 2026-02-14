@@ -8,6 +8,10 @@ export const queryKeys = {
   user: {
     profile: ['user', 'profile'] as const,
   },
+  filter: {
+    locations: (clientId: string) => ['filter', 'locations', clientId] as const,
+    cameras: (locationId: string) => ['filter', 'cameras', locationId] as const,
+  },
   overview: {
     summaryCards: ['overview', 'summaryCards'] as const,
     aiPatterns: ['overview', 'aiPatterns'] as const,

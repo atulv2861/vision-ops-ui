@@ -2,19 +2,9 @@ import { Link } from "react-router-dom";
 import { useOverviewSpaceUtilization } from "../../../hooks/queries";
 import type { SpaceUtilizationPoint } from "../../../api/services/overview.service";
 
-// Dummy data array - This structure matches API response format
-const dummySpaceData: SpaceUtilizationPoint[] = [
-  { name: "Classroom A101", type: "classroom", occupancy: 29, capacity: 30, percentage: 93 },
-  { name: "Classroom A102", type: "classroom", occupancy: 16, capacity: 30, percentage: 50 },
-  { name: "Building A - Main Corridor", type: "corridor", occupancy: 51, capacity: 80, percentage: 64 },
-  { name: "Main Cafeteria", type: "cafeteria", occupancy: 132, capacity: 200, percentage: 66 },
-  { name: "Library Reading Area", type: "library", occupancy: 43, capacity: 60, percentage: 70 }
-];
-
 function SpaceUtilizationList() {
   const { data, isLoading, isError } = useOverviewSpaceUtilization();
-  const spaceData: SpaceUtilizationPoint[] =
-    data != null && !isError ? data : dummySpaceData;
+  const spaceData: SpaceUtilizationPoint[] = data ?? [];
   return (
     <div className="bg-gray-800 rounded-lg p-6">
       <div className="flex items-start justify-between mb-4">
@@ -42,11 +32,11 @@ function SpaceUtilizationList() {
         )}
 
         {isError && !isLoading && (
-          <p className="text-xs text-amber-400 mb-2">Showing sample data (API unavailable).</p>
+          <p className="text-sm text-red-400">Failed to load space utilization.</p>
         )}
 
-        {!isLoading && spaceData.map((space, index) => (
-          <div key={index} className="space-y-2">
+        {!isLoading && !isError && spaceData.map((space, index) => (
+          <div key={space.id ?? index} className="space-y-2">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="text-white font-semibold">{space.name}</h4>

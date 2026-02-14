@@ -50,7 +50,7 @@ function AIDetectedPatterns() {
 
         {!isLoading && !isError && patternsData.map((pattern, index) => (
           <PatternCard
-            key={index}
+            key={pattern.id ?? index}
             title={pattern.title}
             badge={pattern.badge}
             description={pattern.description}

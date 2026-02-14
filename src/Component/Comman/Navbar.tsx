@@ -1,14 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAppContext } from '../../Context/AppContext';
+import { useFilterLocations, useFilterCameras } from '../../hooks/queries';
+import type { LocationItem } from '../../api/services/filter.service';
 
 function Navbar() {
   const { isSidebarCollapsed, setGlobalFilterData } = useAppContext();
+  const { data: locations = [] } = useFilterLocations();
   const [locationOpen, setLocationOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
 
-  const [selectedLocation, setSelectedLocation] = useState('Main Campus');
+  const [selectedLocation, setSelectedLocation] = useState<LocationItem | null>(
+    null
+  );
+  const { data: cameras = [] } = useFilterCameras(selectedLocation?.id ?? null);
   const [selectedDate, setSelectedDate] = useState('Today');
   const [selectedCamera, setSelectedCamera] = useState('All Cameras');
   const [selectedAdmin, setSelectedAdmin] = useState('Admin');
@@ -21,6 +27,21 @@ function Navbar() {
   const dateRef = useRef<HTMLDivElement>(null);
   const cameraRef = useRef<HTMLDivElement>(null);
   const adminRef = useRef<HTMLDivElement>(null);
+
+  // Set initial location when locations load
+  useEffect(() => {
+    if (locations.length > 0 && selectedLocation === null) {
+      const first = locations[0];
+      setSelectedLocation(first);
+      setGlobalFilterData((prev) => ({ ...prev, Location: first.location }));
+    }
+  }, [locations, selectedLocation]);
+
+  // Reset camera to "All Cameras" when location changes
+  useEffect(() => {
+    setSelectedCamera('All Cameras');
+    setGlobalFilterData((prev) => ({ ...prev, CameraList: [] }));
+  }, [selectedLocation?.id]);
 
   // Update date and time every second
   useEffect(() => {
@@ -135,34 +156,69 @@ function Navbar() {
               setAdminOpen(false);
               setShowCustomCalendar(false);
             }}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:text-white hover:bg-gray-700/80 rounded-lg transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            <svg
+              className="w-4 h-4 text-sky-400 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
             </svg>
-            <span>{selectedLocation}</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <span>{selectedLocation?.location ?? 'Select location'}</span>
+            <svg
+              className="w-4 h-4 text-gray-400 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
           {locationOpen && (
-            <div className="absolute top-full left-0 mt-1 w-48 bg-[#1a1d29] border border-gray-700 rounded-md shadow-lg z-50">
-              {['Main Campus', 'North', 'South', 'West Campus'].map((location) => (
+            <div className="absolute top-full left-0 mt-1.5 w-52 bg-[#0f1117] border border-gray-700/80 rounded-xl shadow-xl z-50 py-1.5">
+              {locations.map((loc) => (
                 <button
-                  key={location}
+                  key={loc.id}
                   onClick={() => {
-                    setSelectedLocation(location);
-                    setGlobalFilterData((prev) => ({ ...prev, Location: location }));
+                    setSelectedLocation(loc);
+                    setGlobalFilterData((prev) => ({
+                      ...prev,
+                      Location: loc.location,
+                    }));
                     setLocationOpen(false);
                   }}
-                  className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
-                    selectedLocation === location ? 'text-white bg-gray-800' : 'text-gray-300'
+                  className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                    selectedLocation?.id === loc.id
+                      ? 'text-white bg-gray-700/80'
+                      : 'text-gray-300 hover:bg-gray-700/50'
                   }`}
                 >
-                  {location}
+                  {loc.location}
                 </button>
               ))}
+              {locations.length === 0 && (
+                <div className="px-4 py-3 text-sm text-gray-500">
+                  No locations available
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -297,25 +353,42 @@ function Navbar() {
             </svg>
           </button>
           {cameraOpen && (
-            <div className="absolute top-full left-0 mt-1 w-48 bg-[#1a1d29] border border-gray-700 rounded-md shadow-lg z-50">
-              {['All Cameras', 'Main Entrance', 'Building A', 'Building B'].map((camera) => (
+            <div className="absolute top-full left-0 mt-1 w-52 bg-[#1a1d29] border border-gray-700 rounded-md shadow-lg z-50 py-1 max-h-64 overflow-y-auto">
+              <button
+                onClick={() => {
+                  setSelectedCamera('All Cameras');
+                  setGlobalFilterData((prev) => ({ ...prev, CameraList: [] }));
+                  setCameraOpen(false);
+                }}
+                className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
+                  selectedCamera === 'All Cameras' ? 'text-white bg-gray-800' : 'text-gray-300'
+                }`}
+              >
+                All Cameras
+              </button>
+              {cameras.map((cam) => (
                 <button
-                  key={camera}
+                  key={cam.camera_id}
                   onClick={() => {
-                    setSelectedCamera(camera);
+                    setSelectedCamera(cam.name);
                     setGlobalFilterData((prev) => ({
                       ...prev,
-                      CameraList: camera === 'All Cameras' ? [] : [camera],
+                      CameraList: [cam.name],
                     }));
                     setCameraOpen(false);
                   }}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
-                    selectedCamera === camera ? 'text-white bg-gray-800' : 'text-gray-300'
+                    selectedCamera === cam.name ? 'text-white bg-gray-800' : 'text-gray-300'
                   }`}
                 >
-                  {camera}
+                  {cam.name}
                 </button>
               ))}
+              {cameras.length === 0 && selectedLocation && (
+                <div className="px-4 py-2 text-sm text-gray-500">
+                  No cameras for this location
+                </div>
+              )}
             </div>
           )}
         </div>
