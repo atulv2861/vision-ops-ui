@@ -13,11 +13,11 @@ function Overview() {
   return (
     <div>
       {/* Hero Section */}
-      <div className="bg-[#1E2538] rounded-lg p-8 md:p-12">
+      <div className="bg-[#1E2538] rounded-lg p-5 md:p-6">
         {/* AI-Powered Intelligence Badge */}
-        <div className="flex items-center gap-2 mb-6">
+        <div className="flex items-center gap-2 mb-3">
           <svg 
-            className="w-5 h-5 text-blue-500" 
+            className="w-4 h-4 text-blue-500" 
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"
@@ -57,18 +57,18 @@ function Overview() {
               d="M10.5 11.5c.3.2.6.3 1 .3s.7-.1 1-.3" 
             />
           </svg>
-          <span className="text-blue-500 text-sm font-normal uppercase tracking-wide">
+          <span className="text-blue-400 text-xs font-normal uppercase tracking-wide">
             AI-POWERED INTELLIGENCE
           </span>
         </div>
 
         {/* Main Title */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-white mb-3">
           Campus Command Center
         </h1>
 
         {/* Features Subtitle */}
-        <p className="text-gray-300 text-lg md:text-xl">
+        <p className="text-gray-300 text-sm md:text-base">
           Vision-Based Analytics • Real-Time Monitoring • Privacy-First
         </p>
       </div>
