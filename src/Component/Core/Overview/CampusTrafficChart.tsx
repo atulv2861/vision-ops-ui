@@ -3,24 +3,9 @@ import ReactECharts from 'echarts-for-react';
 import { useOverviewCampusTraffic } from '../../../hooks/queries';
 import type { CampusTrafficPoint } from '../../../api/services/overview.service';
 
-const dummyTrafficData: CampusTrafficPoint[] = [
-  { time: '6AM', primary: 200, secondary: 50 },
-  { time: '7AM', primary: 400, secondary: 80 },
-  { time: '8AM', primary: 800, secondary: 120 },
-  { time: '9AM', primary: 1200, secondary: 150 },
-  { time: '10AM', primary: 1400, secondary: 180 },
-  { time: '11AM', primary: 1500, secondary: 200 },
-  { time: '12PM', primary: 1450, secondary: 190 },
-  { time: '1PM', primary: 1350, secondary: 170 },
-  { time: '2PM', primary: 1100, secondary: 140 },
-  { time: '3PM', primary: 900, secondary: 110 },
-  { time: '4PM', primary: 600, secondary: 80 },
-];
-
 function CampusTrafficChart() {
   const { data, isLoading, isError } = useOverviewCampusTraffic();
-  const trafficData: CampusTrafficPoint[] =
-    data != null && !isError ? data : dummyTrafficData;
+  const trafficData: CampusTrafficPoint[] = data ?? [];
 
   const option = {
     tooltip: {
@@ -51,8 +36,10 @@ function CampusTrafficChart() {
     yAxis: {
       type: 'value' as const,
       min: 0,
-      max: 1600,
-      interval: 400,
+      max: trafficData.length
+        ? Math.max(50, Math.ceil((Math.max(...trafficData.map((d) => d.primary), ...trafficData.map((d) => d.secondary)) * 1.2) / 10) * 10)
+        : 50,
+      interval: undefined,
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: { color: '#9CA3AF', fontSize: 11 },
@@ -60,7 +47,7 @@ function CampusTrafficChart() {
     },
     series: [
       {
-        name: 'Primary Traffic',
+        name: 'Students',
         type: 'line' as const,
         smooth: true,
         data: trafficData.map((item) => item.primary),
@@ -69,7 +56,7 @@ function CampusTrafficChart() {
         showSymbol: false,
       },
       {
-        name: 'Secondary Traffic',
+        name: 'Staff',
         type: 'line' as const,
         smooth: true,
         data: trafficData.map((item) => item.secondary),
@@ -101,13 +88,14 @@ function CampusTrafficChart() {
         {isLoading && (
           <div className="h-full w-full bg-gray-700/60 rounded-lg animate-pulse" />
         )}
-        {!isLoading && (
-          <>
-            {isError && (
-              <p className="text-xs text-amber-400 mb-2">Showing sample data (API unavailable).</p>
-            )}
-            <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
-          </>
+        {!isLoading && isError && (
+          <p className="text-sm text-red-400">Failed to load campus traffic.</p>
+        )}
+        {!isLoading && !isError && trafficData.length > 0 && (
+          <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
+        )}
+        {!isLoading && !isError && trafficData.length === 0 && (
+          <p className="text-sm text-gray-400">No traffic data available.</p>
         )}
       </div>
     </div>

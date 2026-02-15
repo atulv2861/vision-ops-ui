@@ -41,6 +41,13 @@ export interface AIPatternData {
   path: string;
 }
 
+/** API response shape for GET /overview/campus-traffic */
+export interface CampusTrafficApiResponseItem {
+  time: string;
+  students: number;
+  staff: number;
+}
+
 export interface CampusTrafficPoint {
   time: string;
   primary: number;
@@ -111,10 +118,14 @@ export const overviewService = {
   },
 
   async getCampusTraffic(): Promise<CampusTrafficPoint[]> {
-    const { data } = await axiosInstance.get<CampusTrafficPoint[]>(
+    const { data } = await axiosInstance.get<CampusTrafficApiResponseItem[]>(
       endpoints.overview.campusTraffic()
     );
-    return data;
+    return (Array.isArray(data) ? data : []).map((item) => ({
+      time: item.time,
+      primary: item.students,
+      secondary: item.staff,
+    }));
   },
 
   async getEventsByType(): Promise<EventsByTypePoint[]> {
