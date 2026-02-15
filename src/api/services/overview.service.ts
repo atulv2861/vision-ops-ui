@@ -113,7 +113,7 @@ export const overviewService = {
       badge: item.severity ? item.severity.toUpperCase() : 'LOW',
       description: item.description,
       timeAgo: item.timeAgo,
-      path: '/overview',
+      path: '#',
     }));
   },
 
