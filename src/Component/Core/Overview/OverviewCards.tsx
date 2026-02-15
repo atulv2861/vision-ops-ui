@@ -102,7 +102,7 @@ function OverviewCards() {
           {Array.from({ length: 5 }).map((_, index) => (
             <div
               key={index}
-              className="bg-[#1A1A2E] rounded-xl border border-white/[0.06] h-28 min-w-[220px] shrink-0"
+              className="bg-[#28283B] rounded-xl border border-white/[0.06] h-28 min-w-[220px] shrink-0"
             />
           ))}
         </div>

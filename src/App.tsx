@@ -8,7 +8,7 @@ function App() {
   const { isSidebarCollapsed } = useAppContext();
 
   return (
-    <div className="h-screen bg-gray-900">
+    <div className="h-screen bg-[#1E1E2D]">
       <Sidebar />
       <Navbar />
       <main 

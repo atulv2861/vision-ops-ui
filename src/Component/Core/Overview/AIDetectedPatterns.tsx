@@ -61,7 +61,7 @@ function AIDetectedPatterns() {
   const activeCount = patternsData.length;
 
   return (
-    <div className="bg-[#1A1A2E] rounded-xl p-6 border border-white/[0.06] shadow-sm col-span-2">
+    <div className="bg-[#28283B] rounded-xl p-6 border border-white/[0.06] shadow-sm col-span-2">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
@@ -70,7 +70,7 @@ function AIDetectedPatterns() {
             AI Detected Patterns
           </h2>
         </div>
-        <span className="bg-rose-500 text-white text-xs font-medium px-3 py-1.5 rounded-lg">
+        <span className="border border-rose-500 bg-transparent text-white text-xs font-medium px-3 py-1.5 rounded-lg">
           {activeCount} Active
         </span>
       </div>

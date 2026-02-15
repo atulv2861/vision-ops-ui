@@ -32,7 +32,7 @@ function QuickNavigation() {
   const navigationData = dummyNavigationData; // Replace with API data when ready
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6">
+    <div className="bg-[#28283B] rounded-xl p-6 border border-white/[0.06]">
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

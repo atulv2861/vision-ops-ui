@@ -49,9 +49,9 @@ function StatCard({
   subtitleVariant = 'gray',
 }: StatCardProps) {
   return (
-    <div className="bg-[#1A1A2E] rounded-xl p-4 flex flex-col min-h-[120px] border border-white/[0.06] shadow-sm">
+    <div className="bg-[#28283B] rounded-xl p-4 flex flex-col min-h-[120px] border border-white/[0.06] shadow-sm">
       <div className="flex items-start justify-between mb-3">
-        <h3 className="text-[#E0E0E0] text-sm font-medium capitalize">
+        <h3 className="text-white text-sm font-medium capitalize">
           {title.replace(/_/g, ' ')}
         </h3>
         {icon != null && (

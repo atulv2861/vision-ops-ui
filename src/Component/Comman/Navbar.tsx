@@ -143,7 +143,7 @@ function Navbar() {
           outline-offset: 2px;
         }
       `}</style>
-      <div className={`bg-[#1a1d29] text-white h-15 flex items-center justify-between px-6 border-b border-gray-700 fixed top-0 right-0 z-10 transition-all duration-300 ${isSidebarCollapsed ? 'left-20' : 'left-64'}`}>
+      <div className={`bg-[#1E1E2D] text-white h-15 flex items-center justify-between px-6 border-b border-white/[0.08] fixed top-0 right-0 z-10 transition-all duration-300 ${isSidebarCollapsed ? 'left-20' : 'left-64'}`}>
       {/* Left Side - Filters and Dropdowns */}
       <div className="flex items-center gap-4">
         {/* Location Dropdown */}
@@ -193,7 +193,7 @@ function Navbar() {
             </svg>
           </button>
           {locationOpen && (
-            <div className="absolute top-full left-0 mt-1.5 w-52 bg-[#0f1117] border border-gray-700/80 rounded-xl shadow-xl z-50 py-1.5">
+            <div className="absolute top-full left-0 mt-1.5 w-52 bg-[#28283B] border border-white/[0.08] rounded-xl shadow-xl z-50 py-1.5">
               {locations.map((loc) => (
                 <button
                   key={loc.id}
@@ -207,8 +207,8 @@ function Navbar() {
                   }}
                   className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
                     selectedLocation?.id === loc.id
-                      ? 'text-white bg-gray-700/80'
-                      : 'text-gray-300 hover:bg-gray-700/50'
+                      ? 'text-white bg-[#33334B]'
+                      : 'text-[#B0B0B0] hover:bg-[#33334B]/60'
                   }`}
                 >
                   {loc.location}
@@ -246,7 +246,7 @@ function Navbar() {
             </svg>
           </button>
           {dateOpen && (
-            <div className="absolute top-full left-0 mt-1 w-48 bg-[#1a1d29] border border-gray-700 rounded-md shadow-lg z-50">
+            <div className="absolute top-full left-0 mt-1 w-48 bg-[#28283B] border border-white/[0.08] rounded-xl shadow-lg z-50">
               {['Today', 'Last 7 days', 'Last 30 days', 'This week', 'This month', 'Custom'].map((date) => (
                 <button
                   key={date}
@@ -263,7 +263,7 @@ function Navbar() {
                     }
                   }}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
-                    selectedDate === date ? 'text-white bg-gray-800' : 'text-gray-300'
+                    selectedDate === date ? 'text-white bg-[#33334B]' : 'text-[#B0B0B0]'
                   }`}
                 >
                   {date}
@@ -272,7 +272,7 @@ function Navbar() {
             </div>
           )}
           {showCustomCalendar && (
-            <div className="absolute top-full left-0 mt-1 bg-[#1a1d29] border border-gray-700 rounded-md shadow-lg z-50 p-4 min-w-[280px]">
+            <div className="absolute top-full left-0 mt-1 bg-[#28283B] border border-white/[0.08] rounded-xl shadow-lg z-50 p-4 min-w-[280px]">
               <div className="mb-3">
                 <label className="block text-xs text-gray-400 mb-1">Start Date</label>
                 <input
@@ -353,7 +353,7 @@ function Navbar() {
             </svg>
           </button>
           {cameraOpen && (
-            <div className="absolute top-full left-0 mt-1 w-52 bg-[#1a1d29] border border-gray-700 rounded-md shadow-lg z-50 py-1 max-h-64 overflow-y-auto">
+            <div className="absolute top-full left-0 mt-1 w-52 bg-[#28283B] border border-white/[0.08] rounded-xl shadow-lg z-50 py-1 max-h-64 overflow-y-auto">
               <button
                 onClick={() => {
                   setSelectedCamera('All Cameras');
@@ -361,7 +361,7 @@ function Navbar() {
                   setCameraOpen(false);
                 }}
                 className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
-                  selectedCamera === 'All Cameras' ? 'text-white bg-gray-800' : 'text-gray-300'
+                  selectedCamera === 'All Cameras' ? 'text-white bg-[#33334B]' : 'text-[#B0B0B0]'
                 }`}
               >
                 All Cameras
@@ -378,7 +378,7 @@ function Navbar() {
                     setCameraOpen(false);
                   }}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
-                    selectedCamera === cam.name ? 'text-white bg-gray-800' : 'text-gray-300'
+                    selectedCamera === cam.name ? 'text-white bg-[#33334B]' : 'text-[#B0B0B0]'
                   }`}
                 >
                   {cam.name}
@@ -404,7 +404,7 @@ function Navbar() {
 
       {/* Middle Section - Date and Time */}
       <div className="flex-1 flex justify-center">
-        <div className="flex items-center gap-4 px-4 py-2 bg-gray-800/50 rounded-lg border border-gray-700/50 hover:bg-gray-800/70 transition-all duration-200 cursor-default group">
+        <div className="flex items-center gap-4 px-4 py-2 bg-[#28283B] rounded-xl border border-white/[0.08] transition-all duration-200 cursor-default group">
           {/* Date Section */}
           <div className="flex items-center gap-2">
             <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -466,7 +466,7 @@ function Navbar() {
             </svg>
           </button>
           {adminOpen && (
-            <div className="absolute top-full right-0 mt-1 w-48 bg-[#1a1d29] border border-gray-700 rounded-md shadow-lg z-50">
+            <div className="absolute top-full right-0 mt-1 w-48 bg-[#28283B] border border-white/[0.08] rounded-xl shadow-lg z-50">
               {['Admin', 'Security', 'Staff', 'Parent'].map((role) => (
                 <button
                   key={role}
@@ -475,7 +475,7 @@ function Navbar() {
                     setAdminOpen(false);
                   }}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
-                    selectedAdmin === role ? 'text-white bg-gray-800' : 'text-gray-300'
+                    selectedAdmin === role ? 'text-white bg-[#33334B]' : 'text-[#B0B0B0]'
                   }`}
                 >
                   {role}

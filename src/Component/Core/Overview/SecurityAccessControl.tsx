@@ -6,7 +6,7 @@ function SecurityAccessControl() {
   const { data, isLoading, isError } = useOverviewSecurityAccess();
   const securityData: SecurityAccessPoint[] = data ?? [];
   return (
-    <div className="bg-gray-800 rounded-lg p-6">
+    <div className="bg-[#28283B] rounded-xl p-6 border border-white/[0.06]">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-white text-lg font-semibold mb-1">Security & Access Control</h3>
@@ -25,7 +25,7 @@ function SecurityAccessControl() {
             {Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}
-                className="h-12 bg-gray-700/60 rounded-lg animate-pulse"
+                className="h-12 bg-white/[0.04] rounded-xl animate-pulse"
               />
             ))}
           </div>
@@ -57,7 +57,7 @@ function SecurityAccessControl() {
                   </span>
                 </div>
               </div>
-              <div className="w-full bg-gray-700 h-2 rounded-full">
+              <div className="w-full bg-white/[0.08] h-2 rounded-full">
                 <div
                   className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${coveragePercentage}%` }}

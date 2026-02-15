@@ -10,7 +10,7 @@ function CampusTrafficChart() {
   const option = {
     tooltip: {
       trigger: 'axis' as const,
-      backgroundColor: 'rgba(31, 41, 55, 0.95)',
+      backgroundColor: 'rgba(40, 40, 59, 0.95)',
       borderColor: 'rgba(255, 255, 255, 0.1)',
       textStyle: { color: '#fff' },
     },
@@ -68,7 +68,7 @@ function CampusTrafficChart() {
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6">
+    <div className="bg-[#28283B] rounded-xl p-6 border border-white/[0.06]">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-white text-lg font-semibold mb-1">Campus Traffic Today</h3>
@@ -86,7 +86,7 @@ function CampusTrafficChart() {
       </div>
       <div className="h-64 mt-4">
         {isLoading && (
-          <div className="h-full w-full bg-gray-700/60 rounded-lg animate-pulse" />
+          <div className="h-full w-full bg-white/[0.04] rounded-xl animate-pulse" />
         )}
         {!isLoading && isError && (
           <p className="text-sm text-red-400">Failed to load campus traffic.</p>

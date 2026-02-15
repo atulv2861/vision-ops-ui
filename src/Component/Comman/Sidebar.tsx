@@ -111,7 +111,7 @@ function Sidebar() {
   ];
 
   return (
-    <div className={`bg-[#1A1D2D] text-[#E0E0E0] h-screen flex flex-col fixed left-0 top-0 z-30 transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'}`}>
+    <div className={`bg-[#1E1E2D] text-[#E0E0E0] h-screen flex flex-col fixed left-0 top-0 z-30 transition-all duration-300 border-r border-white/[0.08] ${isCollapsed ? 'w-20' : 'w-64'}`}>
       {/* Collapse/Expand Button */}
       <button
         onClick={() => setIsSidebarCollapsed(!isCollapsed)}
@@ -129,7 +129,7 @@ function Sidebar() {
       </button>
 
       {/* Top Section - Branding */}
-      <div className="h-15 flex items-center border-b border-gray-700 px-4">
+      <div className="h-15 flex items-center border-b border-white/[0.08] px-4">
         <div className={`flex items-center gap-3 w-full ${isCollapsed ? 'justify-center' : ''}`}>
           <div className="w-9 h-9 bg-[#4A69F0] rounded-xl flex items-center justify-center flex-shrink-0">
             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,8 +164,8 @@ function Sidebar() {
               onClick={handleClick}
               className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors rounded-md ${
                 isActive
-                  ? 'bg-[#292C45] text-[#E0E0E0]'
-                  : 'text-[#E0E0E0] hover:bg-[#252840]'
+                  ? 'bg-[#28283B] text-[#E0E0E0]'
+                  : 'text-[#E0E0E0] hover:bg-[#28283B]/80'
               } ${isCollapsed ? 'justify-center' : ''}`}
               title={isCollapsed ? item.name : ''}
             >
@@ -179,7 +179,7 @@ function Sidebar() {
       </nav>
 
       {/* Bottom Section - User Profile */}
-      <div className="p-4 border-t border-[#3A3D4E]">
+      <div className="p-4 border-t border-white/[0.08]">
         <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}>
           <div className="w-10 h-10 bg-[#4A69F0] rounded-full flex items-center justify-center flex-shrink-0">
             <span className="text-white font-semibold text-sm">AS</span>

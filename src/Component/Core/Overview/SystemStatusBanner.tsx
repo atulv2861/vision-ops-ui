@@ -25,7 +25,7 @@ const dummyStatusData: SystemStatusData = {
 
 function SystemStatusBanner({ data = dummyStatusData }: SystemStatusBannerProps) {
   return (
-    <div className="bg-gray-800 rounded-lg p-4">
+    <div className="bg-[#28283B] rounded-xl p-4 border border-white/[0.06]">
       <div className="flex items-center justify-between flex-wrap gap-4">
         {/* Status Indicators */}
         <div className="flex items-center gap-6 flex-wrap">
@@ -36,7 +36,7 @@ function SystemStatusBanner({ data = dummyStatusData }: SystemStatusBannerProps)
           </div>
 
           {/* Divider */}
-          <div className="w-px h-4 bg-gray-600" />
+          <div className="w-px h-4 bg-white/[0.15]" />
 
           {/* Vision-based detection active */}
           <div className="flex items-center gap-2">
@@ -48,7 +48,7 @@ function SystemStatusBanner({ data = dummyStatusData }: SystemStatusBannerProps)
           </div>
 
           {/* Divider */}
-          <div className="w-px h-4 bg-gray-600" />
+          <div className="w-px h-4 bg-white/[0.15]" />
 
           {/* Privacy-first monitoring */}
           <div className="flex items-center gap-2">

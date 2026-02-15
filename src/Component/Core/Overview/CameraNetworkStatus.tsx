@@ -7,7 +7,7 @@ function CameraNetworkStatus() {
   const cameraData: CameraNetworkPoint[] = data ?? [];
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6">
+    <div className="bg-[#28283B] rounded-xl p-6 border border-white/[0.06]">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-white text-lg font-semibold mb-1">Camera Network Status</h3>
@@ -41,10 +41,10 @@ function CameraNetworkStatus() {
         {!isLoading && !isError && cameraData.map((camera, index) => (
           <div
             key={camera.id ?? index}
-            className="bg-gray-700/50 rounded-lg p-4 flex items-center justify-between border border-gray-600/50"
+            className="bg-[#28283B]/80 rounded-xl p-4 flex items-center justify-between border border-white/[0.06]"
           >
             <div className="flex items-center gap-3">
-              <div className="bg-gray-600 rounded-lg p-2">
+              <div className="bg-white/[0.08] rounded-lg p-2">
                 <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>

@@ -13,7 +13,7 @@ function Overview() {
   return (
     <div>
       {/* Hero Section */}
-      <div className="bg-[#1E2538] rounded-lg p-5 md:p-6">
+      <div className="bg-[#28283B] rounded-xl p-5 md:p-6 border border-white/[0.06]">
         {/* AI-Powered Intelligence Badge */}
         <div className="flex items-center gap-2 mb-3">
           <svg 

@@ -62,9 +62,9 @@ function PatternCard({
     <div
       onClick={handleClick}
       className={`
-        bg-[#1A1A2E] rounded-xl ${styles.border}
+        bg-[#28283B] rounded-xl ${styles.border}
         flex items-center gap-4 p-4
-        hover:bg-[#22223B] cursor-pointer transition-colors
+        hover:bg-[#33334B] cursor-pointer transition-colors
         border border-white/[0.06]
       `}
     >
@@ -85,8 +85,8 @@ function PatternCard({
             {badge}
           </span>
         </div>
-        <p className="text-gray-400 text-sm mb-1.5">{description}</p>
-        <div className="flex items-center gap-1.5 text-gray-400 text-xs">
+        <p className="text-[#B0B0B0] text-sm mb-1.5">{description}</p>
+        <div className="flex items-center gap-1.5 text-[#808080] text-xs">
           <svg
             className="w-3.5 h-3.5 shrink-0"
             fill="none"
@@ -105,7 +105,7 @@ function PatternCard({
       </div>
 
       {/* Chevron */}
-      <div className="text-gray-400 shrink-0">
+      <div className="text-[#808080] shrink-0">
         <svg
           className="w-5 h-5"
           fill="none"

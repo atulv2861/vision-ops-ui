@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+/* Theme: dark blue-grey (AI Detected Patterns / Campus Command) */
+:root {
+  --theme-bg-main: #1E1E2D;
+  --theme-bg-card: #28283B;
+  --theme-bg-card-hover: #33334B;
+  --theme-text-primary: #FFFFFF;
+  --theme-text-secondary: #B0B0B0;
+  --theme-text-muted: #808080;
+  --theme-border: rgba(255, 255, 255, 0.06);
+}
+
 /* Hide scrollbar utility */
 .scrollbar-hide {
   -ms-overflow-style: none;  /* IE and Edge */
