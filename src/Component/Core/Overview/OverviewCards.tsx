@@ -3,6 +3,7 @@ import StatCard, {
   type StatCardIconColor,
   SUBTITLE_VARIANTS,
 } from './StatCard';
+import { useAppContext } from '../../../Context/AppContext';
 import { useOverviewSummaryCards } from '../../../hooks/queries';
 import type { OverviewCardData } from '../../../api/services/overview.service';
 
@@ -24,7 +25,8 @@ const OverviewCardIcon = (
 );
 
 function OverviewCards() {
-  const { data, isLoading, isError } = useOverviewSummaryCards();
+  const { globalFilterData } = useAppContext();
+  const { data, isLoading, isError } = useOverviewSummaryCards(globalFilterData);
   const cardsData: OverviewCardData[] = data ?? [];
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);

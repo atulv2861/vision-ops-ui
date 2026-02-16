@@ -1,5 +1,10 @@
 import { axiosInstance } from '../axiosInstance';
 import { endpoints } from '../endpoints';
+import { getDateRangeFromFilter } from '../../utils/dateRangeFromFilter';
+import type { GlobalFilterData } from '../../Context/AppContext';
+
+const OVERVIEW_CLIENT_ID =
+  import.meta.env.VITE_CLIENT_ID;
 
 /** API response shape for GET /overview/overview-cards */
 export interface OverviewCardApiResponse {
@@ -85,15 +90,24 @@ export interface CameraNetworkPoint {
   id?: string;
   location: string;
   activeCameras: number;
-  status: 'online' | 'offline' | 'maintenance';
+  status: 'online' | 'offline';
 }
 
 export const overviewService = {
-  async getSummaryCards(): Promise<OverviewCardData[]> {
+  async getSummaryCards(filter: GlobalFilterData | null): Promise<OverviewCardData[]> {
+    // Resolve from/to from date dropdown (Today, Last 7 days, etc.) then send in request
+    const { from, to } = getDateRangeFromFilter(filter);
+    const params = {
+      client_id: OVERVIEW_CLIENT_ID,
+      from,
+      to,
+      camera_id: filter?.cameraId ?? null,
+      location_id: filter?.locationId ?? null,
+    };
     const { data } = await axiosInstance.get<OverviewCardApiResponse[]>(
-      endpoints.overview.overviewCards()
+      endpoints.overview.overviewCards(params)
     );
-    return data.map((card) => ({
+    return (Array.isArray(data) ? data : []).map((card) => ({
       id: card.id,
       title: card.title,
       value: String(card.value),

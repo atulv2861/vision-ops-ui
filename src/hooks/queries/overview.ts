@@ -1,11 +1,24 @@
 import { useQuery } from '@tanstack/react-query';
 import { overviewService } from '../../api/services/overview.service';
 import { queryKeys } from './queryKeys';
+import type { GlobalFilterData } from '../../Context/AppContext';
 
-export function useOverviewSummaryCards() {
+function getSummaryCardsFilterKey(filter: GlobalFilterData | null): string {
+  if (!filter) return 'default';
+  return [
+    filter.locationId ?? '',
+    filter.cameraId ?? '',
+    filter.Date ?? '',
+    filter.fromDate ?? '',
+    filter.toDate ?? '',
+  ].join('|');
+}
+
+export function useOverviewSummaryCards(filter: GlobalFilterData | null) {
+  const filterKey = getSummaryCardsFilterKey(filter);
   return useQuery({
-    queryKey: queryKeys.overview.summaryCards,
-    queryFn: () => overviewService.getSummaryCards(),
+    queryKey: queryKeys.overview.summaryCards(filterKey),
+    queryFn: () => overviewService.getSummaryCards(filter),
   });
 }
 

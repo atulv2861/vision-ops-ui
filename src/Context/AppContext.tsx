@@ -5,6 +5,14 @@ export interface GlobalFilterData {
     Location: string;
     Date: string;
     CameraList: string[];
+    /** Location id for API (e.g. overview-cards) */
+    locationId?: string | null;
+    /** Camera id when a single camera is selected; null for All Cameras */
+    cameraId?: string | null;
+    /** Custom date range start (YYYY-MM-DD); set when Date is custom */
+    fromDate?: string;
+    /** Custom date range end (YYYY-MM-DD); set when Date is custom */
+    toDate?: string;
 }
 
 interface AppContextType {

@@ -28,19 +28,34 @@ function Navbar() {
   const cameraRef = useRef<HTMLDivElement>(null);
   const adminRef = useRef<HTMLDivElement>(null);
 
+  // Sync initial date to global filter so first request uses explicit range (e.g. Today)
+  useEffect(() => {
+    setGlobalFilterData((prev) =>
+      prev.Date === '' ? { ...prev, Date: 'Today' } : prev
+    );
+  }, []);
+
   // Set initial location when locations load
   useEffect(() => {
     if (locations.length > 0 && selectedLocation === null) {
       const first = locations[0];
       setSelectedLocation(first);
-      setGlobalFilterData((prev) => ({ ...prev, Location: first.location }));
+      setGlobalFilterData((prev) => ({
+        ...prev,
+        Location: first.location,
+        locationId: first.id,
+      }));
     }
   }, [locations, selectedLocation]);
 
   // Reset camera to "All Cameras" when location changes
   useEffect(() => {
     setSelectedCamera('All Cameras');
-    setGlobalFilterData((prev) => ({ ...prev, CameraList: [] }));
+    setGlobalFilterData((prev) => ({
+      ...prev,
+      CameraList: [],
+      cameraId: null,
+    }));
   }, [selectedLocation?.id]);
 
   // Update date and time every second
@@ -202,6 +217,7 @@ function Navbar() {
                     setGlobalFilterData((prev) => ({
                       ...prev,
                       Location: loc.location,
+                      locationId: loc.id,
                     }));
                     setLocationOpen(false);
                   }}
@@ -257,7 +273,12 @@ function Navbar() {
                       setDateOpen(false);
                     } else {
                       setSelectedDate(date);
-                      setGlobalFilterData((prev) => ({ ...prev, Date: date }));
+                      setGlobalFilterData((prev) => ({
+                        ...prev,
+                        Date: date,
+                        fromDate: undefined,
+                        toDate: undefined,
+                      }));
                       setShowCustomCalendar(false);
                       setDateOpen(false);
                     }
@@ -304,7 +325,12 @@ function Navbar() {
                       const formattedEnd = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                       const dateRange = `${formattedStart} - ${formattedEnd}`;
                       setSelectedDate(dateRange);
-                      setGlobalFilterData((prev) => ({ ...prev, Date: dateRange }));
+                      setGlobalFilterData((prev) => ({
+                        ...prev,
+                        Date: dateRange,
+                        fromDate: customStartDate,
+                        toDate: customEndDate,
+                      }));
                       setShowCustomCalendar(false);
                     }
                   }}
@@ -357,7 +383,11 @@ function Navbar() {
               <button
                 onClick={() => {
                   setSelectedCamera('All Cameras');
-                  setGlobalFilterData((prev) => ({ ...prev, CameraList: [] }));
+                  setGlobalFilterData((prev) => ({
+                    ...prev,
+                    CameraList: [],
+                    cameraId: null,
+                  }));
                   setCameraOpen(false);
                 }}
                 className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
@@ -374,6 +404,7 @@ function Navbar() {
                     setGlobalFilterData((prev) => ({
                       ...prev,
                       CameraList: [cam.name],
+                      cameraId: cam.camera_id,
                     }));
                     setCameraOpen(false);
                   }}

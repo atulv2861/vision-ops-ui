@@ -6,8 +6,8 @@
 const BASE = {
   AUTH: '/auth',
   USER: '/user',
-  OVERVIEW: 'http://localhost:3000/api/overview',
-  FILTER: 'http://localhost:3000/api/filter',
+  OVERVIEW: `${import.meta.env.VITE_API_BASE_URL}/overview`,
+  FILTER: `${import.meta.env.VITE_API_BASE_URL}/filter`,
 } as const;
 
 export const endpoints = {
@@ -28,7 +28,21 @@ export const endpoints = {
       `${BASE.FILTER}/camera?location_id=${locationId}`,
   },
   overview: {
-    overviewCards: () => `${BASE.OVERVIEW}/overview-cards`,
+    overviewCards: (params: {
+      client_id: string;
+      from: string;
+      to: string;
+      camera_id: string | null;
+      location_id: string | null;
+    }) => {
+      const sp = new URLSearchParams();
+      sp.set('client_id', params.client_id);
+      sp.set('from', params.from);
+      sp.set('to', params.to);
+      sp.set('camera_id', params.camera_id ?? 'null');
+      sp.set('location_id', params.location_id ?? 'null');
+      return `${BASE.OVERVIEW}/overview-cards?${sp.toString()}`;
+    },
     summaryCards: () => `${BASE.OVERVIEW}/summary-cards`,
     aiPatterns: () => `${BASE.OVERVIEW}/ai-patterns`,
     campusTraffic: () => `${BASE.OVERVIEW}/campus-traffic`,

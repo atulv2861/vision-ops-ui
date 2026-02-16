@@ -1,6 +1,5 @@
 import axios, { type AxiosError } from 'axios';
 import { getToken, removeToken } from '../utils/token';
-import { getGlobalFilters } from '../utils/globalFilters';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 const REQUEST_TIMEOUT_MS = 15_000;
@@ -24,26 +23,6 @@ function handleUnauthorized(): void {
   }
 }
 
-/** Decide if global filters should be attached for this request. */
-function shouldAttachFilters(url?: string): boolean {
-  if (!url) return true;
-
-  // If full URL, extract pathname; otherwise treat as relative path
-  let path: string;
-  try {
-    path = url.startsWith('http') ? new URL(url).pathname : url;
-  } catch {
-    path = url;
-  }
-
-  // Do NOT send filters for auth/user related APIs like login, signup, logout, profile, update user
-  if (path.startsWith('/auth') || path.startsWith('/user')) {
-    return false;
-  }
-
-  return true;
-}
-
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = getToken();
@@ -51,21 +30,8 @@ axiosInstance.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    if (shouldAttachFilters(config.url)) {
-      const filters = getGlobalFilters();
-      if (filters) {
-        const existingParams = (config.params ?? {}) as Record<string, unknown>;
-        config.params = {
-          ...existingParams,
-          location: filters.Location || existingParams.location,
-          date: filters.Date || existingParams.date,
-          cameraList:
-            (filters.CameraList && filters.CameraList.length > 0
-              ? filters.CameraList
-              : existingParams.cameraList) ?? undefined,
-        };
-      }
-    }
+    // Do not attach global filter params (date, location, cameraList) to requests;
+    // APIs that need filters (e.g. overview-cards) send client_id, from, to, location_id, camera_id in their URL.
 
     return config;
   },

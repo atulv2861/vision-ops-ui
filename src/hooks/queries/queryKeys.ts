@@ -13,7 +13,8 @@ export const queryKeys = {
     cameras: (locationId: string) => ['filter', 'cameras', locationId] as const,
   },
   overview: {
-    summaryCards: ['overview', 'summaryCards'] as const,
+    summaryCards: (filterKey: string) =>
+      ['overview', 'summaryCards', filterKey] as const,
     aiPatterns: ['overview', 'aiPatterns'] as const,
     campusTraffic: ['overview', 'campusTraffic'] as const,
     eventsByType: ['overview', 'eventsByType'] as const,
