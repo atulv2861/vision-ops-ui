@@ -3,6 +3,8 @@ import SpaceUtilizationFilters from '../Component/Core/SpaceUtilization/SpaceUti
 import SpaceUtilizationSummaryCards from '../Component/Core/SpaceUtilization/SpaceUtilizationSummaryCards';
 import ViewSelector from '../Component/Comman/ViewSelector';
 import SpaceDetailPanel from '../Component/Core/SpaceUtilization/SpaceDetailPanel';
+import OccupancyOverTimeChart from '../Component/Core/Overview/OccupancyOverTimeChart';
+import SpaceUtilizationBarChart from '../Component/Core/Overview/SpaceUtilizationBarChart';
 
 function SpaceUtilization() {
   const [selectedView, setSelectedView] = useState<'dashboard' | 'map'>('dashboard');
@@ -12,7 +14,15 @@ function SpaceUtilization() {
       <SpaceUtilizationFilters />
       <SpaceUtilizationSummaryCards />
       <ViewSelector value={selectedView} onChange={setSelectedView} />
-      
+
+      {/* Dashboard View – Actual vs Expected & Utilization by space (stacked vertically) */}
+      {selectedView === 'dashboard' && (
+        <div className="flex flex-col gap-6">
+          <OccupancyOverTimeChart />
+          <SpaceUtilizationBarChart />
+        </div>
+      )}
+
       {/* Map View Content */}
       {selectedView === 'map' && (
         <div className="max-w-4xl mx-auto">
