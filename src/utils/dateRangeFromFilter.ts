@@ -1,5 +1,5 @@
 /**
- * Compute API from/to datetime strings (YYYY-MM-DD HH:mm:ss) from filter fromDate/toDate.
+ * Compute API from/to datetime strings (YYYY-MM-DDTHH:mm:ss, T-separated) from filter fromDate/toDate.
  */
 const pad = (n: number) => String(n).padStart(2, '0');
 
@@ -7,8 +7,8 @@ function formatDateTime(d: Date, endOfDay: boolean): string {
   const y = d.getFullYear();
   const m = d.getMonth() + 1;
   const day = d.getDate();
-  if (endOfDay) return `${y}-${pad(m)}-${pad(day)} 23:59:59`;
-  return `${y}-${pad(m)}-${pad(day)} 00:00:00`;
+  if (endOfDay) return `${y}-${pad(m)}-${pad(day)}T23:59:59`;
+  return `${y}-${pad(m)}-${pad(day)}T00:00:00`;
 }
 
 export interface FilterDateInput {
@@ -25,8 +25,8 @@ export function getDateRangeFromFilter(filter: FilterDateInput | null): {
 
   if (filter?.fromDate && filter?.toDate) {
     return {
-      from: `${filter.fromDate} 00:00:00`,
-      to: `${filter.toDate} 23:59:59`,
+      from: `${filter.fromDate}T00:00:00`,
+      to: `${filter.toDate}T23:59:59`,
     };
   }
   return {
