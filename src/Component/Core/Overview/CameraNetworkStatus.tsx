@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
+import { useAppContext } from "../../../Context/AppContext";
 import { useOverviewCameraNetworkStatus } from "../../../hooks/queries";
 import type { CameraNetworkPoint } from "../../../api/services/overview.service";
 
 function CameraNetworkStatus() {
-  const { data, isLoading, isError } = useOverviewCameraNetworkStatus();
+  const { globalFilterData } = useAppContext();
+  const { data, isLoading, isError } = useOverviewCameraNetworkStatus(globalFilterData);
   const cameraData: CameraNetworkPoint[] = data ?? [];
 
   return (

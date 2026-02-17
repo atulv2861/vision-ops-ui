@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useAppContext } from "../../../Context/AppContext";
 import { useOverviewSecurityAccess } from "../../../hooks/queries";
 import type { SecurityAccessPoint } from "../../../api/services/overview.service";
 
@@ -12,7 +13,8 @@ function getStatusStyle(
 }
 
 function SecurityAccessControl() {
-  const { data, isLoading, isError } = useOverviewSecurityAccess();
+  const { globalFilterData } = useAppContext();
+  const { data, isLoading, isError } = useOverviewSecurityAccess(globalFilterData);
   const securityData: SecurityAccessPoint[] = data ?? [];
 
   return (

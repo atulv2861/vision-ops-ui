@@ -21,52 +21,59 @@ export function useOverviewSummaryCards(filter: GlobalFilterData | null) {
   });
 }
 
-export function useOverviewAiPatterns() {
+export function useOverviewAiPatterns(filter: GlobalFilterData | null) {
+  const filterKey = getSummaryCardsFilterKey(filter);
   return useQuery({
-    queryKey: queryKeys.overview.aiPatterns,
-    queryFn: () => overviewService.getAiPatterns(),
+    queryKey: [...queryKeys.overview.aiPatterns, filterKey],
+    queryFn: () => overviewService.getAiPatterns(filter),
   });
 }
 
-export function useOverviewCampusTraffic() {
+export function useOverviewCampusTraffic(filter: GlobalFilterData | null) {
+  const filterKey = getSummaryCardsFilterKey(filter);
   return useQuery({
-    queryKey: queryKeys.overview.campusTraffic,
-    queryFn: () => overviewService.getCampusTraffic(),
+    queryKey: [...queryKeys.overview.campusTraffic, filterKey],
+    queryFn: () => overviewService.getCampusTraffic(filter),
   });
 }
 
-export function useOverviewEventsByType() {
+export function useOverviewEventsByType(filter: GlobalFilterData | null) {
+  const filterKey = getSummaryCardsFilterKey(filter);
   return useQuery({
-    queryKey: queryKeys.overview.eventsByType,
-    queryFn: () => overviewService.getEventsByType(),
+    queryKey: [...queryKeys.overview.eventsByType, filterKey],
+    queryFn: () => overviewService.getEventsByType(filter),
   });
 }
 
-export function useOverviewSpaceUtilization() {
+export function useOverviewSpaceUtilization(filter: GlobalFilterData | null) {
+  const filterKey = getSummaryCardsFilterKey(filter);
   return useQuery({
-    queryKey: queryKeys.overview.spaceUtilization,
-    queryFn: () => overviewService.getSpaceUtilization(),
+    queryKey: [...queryKeys.overview.spaceUtilization, filterKey],
+    queryFn: () => overviewService.getSpaceUtilization(filter),
   });
 }
 
-export function useOverviewSecurityAccess() {
+export function useOverviewSecurityAccess(filter: GlobalFilterData | null) {
+  const filterKey = getSummaryCardsFilterKey(filter);
   return useQuery({
-    queryKey: queryKeys.overview.securityAccess,
-    queryFn: () => overviewService.getSecurityAccess(),
+    queryKey: [...queryKeys.overview.securityAccess, filterKey],
+    queryFn: () => overviewService.getSecurityAccess(filter),
   });
 }
 
-export function useOverviewCleaningCompliance() {
+export function useOverviewCleaningCompliance(filter: GlobalFilterData | null) {
+  const filterKey = getSummaryCardsFilterKey(filter);
   return useQuery({
-    queryKey: queryKeys.overview.cleaningCompliance,
-    queryFn: () => overviewService.getCleaningCompliance(),
+    queryKey: [...queryKeys.overview.cleaningCompliance, filterKey],
+    queryFn: () => overviewService.getCleaningCompliance(filter),
   });
 }
 
-export function useOverviewCameraNetworkStatus() {
+export function useOverviewCameraNetworkStatus(filter: GlobalFilterData | null) {
+  const filterKey = getSummaryCardsFilterKey(filter);
   return useQuery({
-    queryKey: queryKeys.overview.cameraNetworkStatus,
-    queryFn: () => overviewService.getCameraNetworkStatus(),
+    queryKey: [...queryKeys.overview.cameraNetworkStatus, filterKey],
+    queryFn: () => overviewService.getCameraNetworkStatus(filter),
   });
 }
 

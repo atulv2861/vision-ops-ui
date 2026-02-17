@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import ReactECharts from 'echarts-for-react';
+import { useAppContext } from '../../../Context/AppContext';
 import { useOverviewCampusTraffic } from '../../../hooks/queries';
 import type { CampusTrafficPoint } from '../../../api/services/overview.service';
 
 function CampusTrafficChart() {
-  const { data, isLoading, isError } = useOverviewCampusTraffic();
+  const { globalFilterData } = useAppContext();
+  const { data, isLoading, isError } = useOverviewCampusTraffic(globalFilterData);
   const trafficData: CampusTrafficPoint[] = data ?? [];
 
   const option = {

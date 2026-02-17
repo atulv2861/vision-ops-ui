@@ -1,5 +1,6 @@
 import ReactECharts from 'echarts-for-react';
 import { Link } from 'react-router-dom';
+import { useAppContext } from '../../../Context/AppContext';
 import { useOverviewEventsByType } from '../../../hooks/queries';
 import type { EventsByTypePoint } from '../../../api/services/overview.service';
 
@@ -12,7 +13,8 @@ const dummyEventsData: EventsByTypePoint[] = [
 ];
 
 function EventsByTypeChart() {
-  const { data, isLoading, isError } = useOverviewEventsByType();
+  const { globalFilterData } = useAppContext();
+  const { data, isLoading, isError } = useOverviewEventsByType(globalFilterData);
   const eventsData: EventsByTypePoint[] =
     data != null && !isError ? data : dummyEventsData;
 

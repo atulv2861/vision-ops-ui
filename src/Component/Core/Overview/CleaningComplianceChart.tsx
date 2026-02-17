@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import ReactECharts from 'echarts-for-react';
+import { useAppContext } from '../../../Context/AppContext';
 import { useOverviewCleaningCompliance } from '../../../hooks/queries';
 import type { CleaningCompliancePoint } from '../../../api/services/overview.service';
 
@@ -12,7 +13,8 @@ const dummyCleaningData: CleaningCompliancePoint[] = [
 ];
 
 function CleaningComplianceChart() {
-  const { data, isLoading, isError } = useOverviewCleaningCompliance();
+  const { globalFilterData } = useAppContext();
+  const { data, isLoading, isError } = useOverviewCleaningCompliance(globalFilterData);
   const cleaningData: CleaningCompliancePoint[] =
     data != null && !isError ? data : dummyCleaningData;
 

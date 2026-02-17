@@ -3,6 +3,7 @@ import PatternCard, {
   getThemeFromBadge,
   type PatternCardTheme,
 } from './PatternCard';
+import { useAppContext } from '../../../Context/AppContext';
 import { useOverviewAiPatterns } from '../../../hooks/queries';
 import type { AIPatternData } from '../../../api/services/overview.service';
 
@@ -56,7 +57,8 @@ const PATTERN_ICONS: Record<PatternCardTheme, ReactNode> = {
 };
 
 function AIDetectedPatterns() {
-  const { data, isLoading, isError } = useOverviewAiPatterns();
+  const { globalFilterData } = useAppContext();
+  const { data, isLoading, isError } = useOverviewAiPatterns(globalFilterData);
   const patternsData: AIPatternData[] = data ?? [];
   const activeCount = patternsData.length;
 

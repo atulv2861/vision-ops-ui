@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useAppContext } from "../../../Context/AppContext";
 import { useOverviewSpaceUtilization } from "../../../hooks/queries";
 import type { SpaceUtilizationPoint } from "../../../api/services/overview.service";
 
@@ -9,7 +10,8 @@ function getOccupancyStyle(percentage: number): { pill: string; bar: string } {
 }
 
 function SpaceUtilizationList() {
-  const { data, isLoading, isError } = useOverviewSpaceUtilization();
+  const { globalFilterData } = useAppContext();
+  const { data, isLoading, isError } = useOverviewSpaceUtilization(globalFilterData);
   const spaceData: SpaceUtilizationPoint[] = data ?? [];
 
   return (

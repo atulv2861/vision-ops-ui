@@ -1,10 +1,21 @@
 import { axiosInstance } from '../axiosInstance';
-import { endpoints } from '../endpoints';
+import { endpoints, type OverviewFilterParams } from '../endpoints';
 import { getDateRangeFromFilter } from '../../utils/dateRangeFromFilter';
 import type { GlobalFilterData } from '../../Context/AppContext';
 
 const OVERVIEW_CLIENT_ID =
-  import.meta.env.VITE_CLIENT_ID;
+  import.meta.env.VITE_CLIENT_ID ?? 'c5a7e9b1-3d4f-4a8e-9c2b-6f7d3e1a8b5c';
+
+function buildOverviewParams(filter: GlobalFilterData | null): OverviewFilterParams {
+  const { from, to } = getDateRangeFromFilter(filter);
+  return {
+    client_id: OVERVIEW_CLIENT_ID,
+    from,
+    to,
+    camera_id: filter?.cameraId ?? null,
+    location_id: filter?.locationId ?? null,
+  };
+}
 
 /** API response shape for GET /overview/overview-cards */
 export interface OverviewCardApiResponse {
@@ -95,15 +106,7 @@ export interface CameraNetworkPoint {
 
 export const overviewService = {
   async getSummaryCards(filter: GlobalFilterData | null): Promise<OverviewCardData[]> {
-    // Resolve from/to from date dropdown (Today, Last 7 days, etc.) then send in request
-    const { from, to } = getDateRangeFromFilter(filter);
-    const params = {
-      client_id: OVERVIEW_CLIENT_ID,
-      from,
-      to,
-      camera_id: filter?.cameraId ?? null,
-      location_id: filter?.locationId ?? null,
-    };
+    const params = buildOverviewParams(filter);
     const { data } = await axiosInstance.get<OverviewCardApiResponse[]>(
       endpoints.overview.overviewCards(params)
     );
@@ -117,9 +120,10 @@ export const overviewService = {
     }));
   },
 
-  async getAiPatterns(): Promise<AIPatternData[]> {
+  async getAiPatterns(filter: GlobalFilterData | null): Promise<AIPatternData[]> {
+    const params = buildOverviewParams(filter);
     const { data } = await axiosInstance.get<AiPatternsApiResponseItem[]>(
-      endpoints.overview.aiPatterns()
+      endpoints.overview.aiPatterns(params)
     );
     return (Array.isArray(data) ? data : []).map((item) => ({
       id: item.id,
@@ -131,9 +135,10 @@ export const overviewService = {
     }));
   },
 
-  async getCampusTraffic(): Promise<CampusTrafficPoint[]> {
+  async getCampusTraffic(filter: GlobalFilterData | null): Promise<CampusTrafficPoint[]> {
+    const params = buildOverviewParams(filter);
     const { data } = await axiosInstance.get<CampusTrafficApiResponseItem[]>(
-      endpoints.overview.campusTraffic()
+      endpoints.overview.campusTraffic(params)
     );
     return (Array.isArray(data) ? data : []).map((item) => ({
       time: item.time,
@@ -142,37 +147,42 @@ export const overviewService = {
     }));
   },
 
-  async getEventsByType(): Promise<EventsByTypePoint[]> {
+  async getEventsByType(filter: GlobalFilterData | null): Promise<EventsByTypePoint[]> {
+    const params = buildOverviewParams(filter);
     const { data } = await axiosInstance.get<EventsByTypePoint[]>(
-      endpoints.overview.eventsByType()
+      endpoints.overview.eventsByType(params)
     );
     return data;
   },
 
-   async getSpaceUtilization(): Promise<SpaceUtilizationPoint[]> {
+  async getSpaceUtilization(filter: GlobalFilterData | null): Promise<SpaceUtilizationPoint[]> {
+    const params = buildOverviewParams(filter);
     const { data } = await axiosInstance.get<SpaceUtilizationPoint[]>(
-      endpoints.overview.spaceUtilization()
+      endpoints.overview.spaceUtilization(params)
     );
     return data;
   },
 
-  async getSecurityAccess(): Promise<SecurityAccessPoint[]> {
+  async getSecurityAccess(filter: GlobalFilterData | null): Promise<SecurityAccessPoint[]> {
+    const params = buildOverviewParams(filter);
     const { data } = await axiosInstance.get<SecurityAccessPoint[]>(
-      endpoints.overview.securityAccess()
+      endpoints.overview.securityAccess(params)
     );
     return data;
   },
 
-  async getCleaningCompliance(): Promise<CleaningCompliancePoint[]> {
+  async getCleaningCompliance(filter: GlobalFilterData | null): Promise<CleaningCompliancePoint[]> {
+    const params = buildOverviewParams(filter);
     const { data } = await axiosInstance.get<CleaningCompliancePoint[]>(
-      endpoints.overview.cleaningCompliance()
+      endpoints.overview.cleaningCompliance(params)
     );
     return data;
   },
 
-  async getCameraNetworkStatus(): Promise<CameraNetworkPoint[]> {
+  async getCameraNetworkStatus(filter: GlobalFilterData | null): Promise<CameraNetworkPoint[]> {
+    const params = buildOverviewParams(filter);
     const { data } = await axiosInstance.get<CameraNetworkPoint[]>(
-      endpoints.overview.cameraNetworkStatus()
+      endpoints.overview.cameraNetworkStatus(params)
     );
     return data;
   },
