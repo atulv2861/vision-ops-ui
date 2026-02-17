@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAppContext } from '../../Context/AppContext';
 import { useFilterLocations, useFilterCameras } from '../../hooks/queries';
+import { getDateRangeYMDForPreset } from '../../utils/dateRangeFromFilter';
 import type { LocationItem } from '../../api/services/filter.service';
 
 function Navbar() {
@@ -28,11 +29,13 @@ function Navbar() {
   const cameraRef = useRef<HTMLDivElement>(null);
   const adminRef = useRef<HTMLDivElement>(null);
 
-  // Sync initial date to global filter so first request uses explicit range (e.g. Today)
+  // Sync initial date range (Today) to global filter so first request has fromDate/toDate
   useEffect(() => {
-    setGlobalFilterData((prev) =>
-      prev.Date === '' ? { ...prev, Date: 'Today' } : prev
-    );
+    setGlobalFilterData((prev) => {
+      if (prev.fromDate != null && prev.toDate != null) return prev;
+      const { fromDate, toDate } = getDateRangeYMDForPreset('Today');
+      return { ...prev, fromDate, toDate };
+    });
   }, []);
 
   // Set initial location when locations load
@@ -40,22 +43,14 @@ function Navbar() {
     if (locations.length > 0 && selectedLocation === null) {
       const first = locations[0];
       setSelectedLocation(first);
-      setGlobalFilterData((prev) => ({
-        ...prev,
-        Location: first.location,
-        locationId: first.id,
-      }));
+      setGlobalFilterData((prev) => ({ ...prev, locationId: first.id }));
     }
   }, [locations, selectedLocation]);
 
   // Reset camera to "All Cameras" when location changes
   useEffect(() => {
     setSelectedCamera('All Cameras');
-    setGlobalFilterData((prev) => ({
-      ...prev,
-      CameraList: [],
-      cameraId: null,
-    }));
+    setGlobalFilterData((prev) => ({ ...prev, cameraId: null }));
   }, [selectedLocation?.id]);
 
   // Update date and time every second
@@ -214,11 +209,7 @@ function Navbar() {
                   key={loc.id}
                   onClick={() => {
                     setSelectedLocation(loc);
-                    setGlobalFilterData((prev) => ({
-                      ...prev,
-                      Location: loc.location,
-                      locationId: loc.id,
-                    }));
+                    setGlobalFilterData((prev) => ({ ...prev, locationId: loc.id }));
                     setLocationOpen(false);
                   }}
                   className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
@@ -273,12 +264,8 @@ function Navbar() {
                       setDateOpen(false);
                     } else {
                       setSelectedDate(date);
-                      setGlobalFilterData((prev) => ({
-                        ...prev,
-                        Date: date,
-                        fromDate: undefined,
-                        toDate: undefined,
-                      }));
+                      const { fromDate, toDate } = getDateRangeYMDForPreset(date);
+                      setGlobalFilterData((prev) => ({ ...prev, fromDate, toDate }));
                       setShowCustomCalendar(false);
                       setDateOpen(false);
                     }
@@ -327,7 +314,6 @@ function Navbar() {
                       setSelectedDate(dateRange);
                       setGlobalFilterData((prev) => ({
                         ...prev,
-                        Date: dateRange,
                         fromDate: customStartDate,
                         toDate: customEndDate,
                       }));
@@ -383,11 +369,7 @@ function Navbar() {
               <button
                 onClick={() => {
                   setSelectedCamera('All Cameras');
-                  setGlobalFilterData((prev) => ({
-                    ...prev,
-                    CameraList: [],
-                    cameraId: null,
-                  }));
+                  setGlobalFilterData((prev) => ({ ...prev, cameraId: null }));
                   setCameraOpen(false);
                 }}
                 className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
@@ -401,11 +383,7 @@ function Navbar() {
                   key={cam.camera_id}
                   onClick={() => {
                     setSelectedCamera(cam.name);
-                    setGlobalFilterData((prev) => ({
-                      ...prev,
-                      CameraList: [cam.name],
-                      cameraId: cam.camera_id,
-                    }));
+                    setGlobalFilterData((prev) => ({ ...prev, cameraId: cam.camera_id }));
                     setCameraOpen(false);
                   }}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${

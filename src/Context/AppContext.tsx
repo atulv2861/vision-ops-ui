@@ -2,16 +2,13 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { setGlobalFilters } from "../utils/globalFilters";
 
 export interface GlobalFilterData {
-    Location: string;
-    Date: string;
-    CameraList: string[];
     /** Location id for API (e.g. overview-cards) */
     locationId?: string | null;
     /** Camera id when a single camera is selected; null for All Cameras */
     cameraId?: string | null;
-    /** Custom date range start (YYYY-MM-DD); set when Date is custom */
+    /** Date range start (YYYY-MM-DD) */
     fromDate?: string;
-    /** Custom date range end (YYYY-MM-DD); set when Date is custom */
+    /** Date range end (YYYY-MM-DD) */
     toDate?: string;
 }
 
@@ -25,17 +22,13 @@ interface AppContextType {
 const AppProvider = createContext<AppContextType>({
     isSidebarCollapsed: false,
     setIsSidebarCollapsed: () => {},
-    globalFilterData: { Location: '', Date: '', CameraList: [] },
+    globalFilterData: {},
     setGlobalFilterData: () => {},
 });
 
 function AppContext({ children }: { children: ReactNode }) {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-    const [globalFilterData, setGlobalFilterData] = useState<GlobalFilterData>({
-        Location: '',
-        Date: '',
-        CameraList: [],
-    });
+    const [globalFilterData, setGlobalFilterData] = useState<GlobalFilterData>({});
 
     useEffect(() => {
         setGlobalFilters(globalFilterData);

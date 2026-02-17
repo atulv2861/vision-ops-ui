@@ -1,6 +1,5 @@
 /**
- * Compute API from/to datetime strings (YYYY-MM-DD HH:mm:ss) from the navbar date dropdown.
- * e.g. "Today" → today 00:00:00 to 23:59:59; "Last 7 days" → 7-day range; then send in request.
+ * Compute API from/to datetime strings (YYYY-MM-DD HH:mm:ss) from filter fromDate/toDate.
  */
 const pad = (n: number) => String(n).padStart(2, '0');
 
@@ -13,7 +12,6 @@ function formatDateTime(d: Date, endOfDay: boolean): string {
 }
 
 export interface FilterDateInput {
-  Date: string;
   fromDate?: string;
   toDate?: string;
 }
@@ -25,64 +23,68 @@ export function getDateRangeFromFilter(filter: FilterDateInput | null): {
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  if (!filter?.Date) {
-    return {
-      from: formatDateTime(todayStart, false),
-      to: formatDateTime(now, true),
-    };
-  }
-
-  const dateLabel = filter.Date.trim();
-  if (filter.fromDate && filter.toDate) {
+  if (filter?.fromDate && filter?.toDate) {
     return {
       from: `${filter.fromDate} 00:00:00`,
       to: `${filter.toDate} 23:59:59`,
     };
   }
-  if (dateLabel === 'Today') {
-    return {
-      from: formatDateTime(todayStart, false),
-      to: formatDateTime(now, true),
-    };
+  return {
+    from: formatDateTime(todayStart, false),
+    to: formatDateTime(now, true),
+  };
+}
+
+/** Return fromDate/toDate (YYYY-MM-DD) for a preset label. Used by Navbar to set filter. */
+export function getDateRangeYMDForPreset(preset: string): {
+  fromDate: string;
+  toDate: string;
+} {
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const y = now.getFullYear();
+  const m = now.getMonth();
+  const d = now.getDate();
+
+  const toDate = `${y}-${pad(m + 1)}-${pad(todayStart.getDate())}`;
+
+  if (preset === 'Today') {
+    return { fromDate: toDate, toDate };
   }
-  if (dateLabel === 'Last 7 days') {
+  if (preset === 'Last 7 days') {
     const from = new Date(todayStart);
     from.setDate(from.getDate() - 6);
     return {
-      from: formatDateTime(from, false),
-      to: formatDateTime(now, true),
+      fromDate: `${from.getFullYear()}-${pad(from.getMonth() + 1)}-${pad(from.getDate())}`,
+      toDate,
     };
   }
-  if (dateLabel === 'Last 30 days') {
+  if (preset === 'Last 30 days') {
     const from = new Date(todayStart);
     from.setDate(from.getDate() - 29);
     return {
-      from: formatDateTime(from, false),
-      to: formatDateTime(now, true),
+      fromDate: `${from.getFullYear()}-${pad(from.getMonth() + 1)}-${pad(from.getDate())}`,
+      toDate,
     };
   }
-  if (dateLabel === 'This week') {
+  if (preset === 'This week') {
     const day = now.getDay();
     const sun = new Date(todayStart);
     sun.setDate(sun.getDate() - day);
     const sat = new Date(sun);
     sat.setDate(sat.getDate() + 6);
     return {
-      from: formatDateTime(sun, false),
-      to: formatDateTime(sat, true),
+      fromDate: `${sun.getFullYear()}-${pad(sun.getMonth() + 1)}-${pad(sun.getDate())}`,
+      toDate: `${sat.getFullYear()}-${pad(sat.getMonth() + 1)}-${pad(sat.getDate())}`,
     };
   }
-  if (dateLabel === 'This month') {
-    const first = new Date(now.getFullYear(), now.getMonth(), 1);
-    const last = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  if (preset === 'This month') {
+    const first = new Date(y, m, 1);
+    const last = new Date(y, m + 1, 0);
     return {
-      from: formatDateTime(first, false),
-      to: formatDateTime(last, true),
+      fromDate: `${y}-${pad(m + 1)}-${pad(first.getDate())}`,
+      toDate: `${y}-${pad(m + 1)}-${pad(last.getDate())}`,
     };
   }
-
-  return {
-    from: formatDateTime(todayStart, false),
-    to: formatDateTime(now, true),
-  };
+  return { fromDate: toDate, toDate };
 }

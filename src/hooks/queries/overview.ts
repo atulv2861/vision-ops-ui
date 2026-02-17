@@ -8,7 +8,6 @@ function getSummaryCardsFilterKey(filter: GlobalFilterData | null): string {
   return [
     filter.locationId ?? '',
     filter.cameraId ?? '',
-    filter.Date ?? '',
     filter.fromDate ?? '',
     filter.toDate ?? '',
   ].join('|');
