@@ -6,7 +6,7 @@ const dummySummaryCardsData: StudentDistributionSummaryCardData[] = [
     title: 'Current Presence',
     value: '156',
     subtitle: 'students across location',
-    subtitleColor: 'text-gray-400',
+    subtitleColor: 'text-[#B0B0B0]',
     iconType: 'presence',
     iconColor: 'bg-orange-500'
   },
@@ -14,7 +14,7 @@ const dummySummaryCardsData: StudentDistributionSummaryCardData[] = [
     title: 'Peak Today',
     value: '179',
     subtitle: 'at 11:00 AM',
-    subtitleColor: 'text-green-500',
+    subtitleColor: 'text-emerald-400',
     iconType: 'peak',
     iconColor: 'bg-blue-500'
   },
@@ -22,7 +22,7 @@ const dummySummaryCardsData: StudentDistributionSummaryCardData[] = [
     title: 'Avg Dwell Time',
     value: '12 min',
     subtitle: 'per student',
-    subtitleColor: 'text-gray-400',
+    subtitleColor: 'text-[#B0B0B0]',
     iconType: 'avgDwell',
     iconColor: 'bg-purple-500'
   },
@@ -30,7 +30,7 @@ const dummySummaryCardsData: StudentDistributionSummaryCardData[] = [
     title: 'Peak Dwell Time',
     value: '18 min',
     subtitle: 'maximum today',
-    subtitleColor: 'text-gray-400',
+    subtitleColor: 'text-[#B0B0B0]',
     iconType: 'peakDwell',
     iconColor: 'bg-green-500'
   }
