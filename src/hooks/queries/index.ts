@@ -13,3 +13,4 @@ export {
   useOverviewCleaningCompliance,
   useOverviewCameraNetworkStatus,
 } from './overview';
+export { useStudentSummary } from './students';

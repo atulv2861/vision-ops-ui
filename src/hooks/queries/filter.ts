@@ -14,10 +14,11 @@ export function useFilterLocations(clientId?: string) {
   });
 }
 
-export function useFilterCameras(locationId?: string | null) {
+export function useFilterCameras(locationIds: string[] | null) {
+  const ids = locationIds ?? [];
   return useQuery({
-    queryKey: queryKeys.filter.cameras(locationId ?? ''),
-    queryFn: () => filterService.getCameras(locationId!),
-    enabled: !!locationId,
+    queryKey: queryKeys.filter.cameras(ids),
+    queryFn: () => filterService.getCameras(ids),
+    enabled: ids.length > 0,
   });
 }

@@ -6,6 +6,8 @@ export interface GlobalFilterData {
     locationId?: string | null;
     /** Camera id when a single camera is selected; null for All Cameras */
     cameraId?: string | null;
+    /** Camera ids for overview APIs (sent in request body as camera_ids) */
+    cameraIds?: string[];
     /** Date range start (YYYY-MM-DD) */
     fromDate?: string;
     /** Date range end (YYYY-MM-DD) */

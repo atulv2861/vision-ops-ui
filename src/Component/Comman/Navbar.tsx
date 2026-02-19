@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useAppContext } from '../../Context/AppContext';
 import { useFilterLocations, useFilterCameras } from '../../hooks/queries';
 import { getDateRangeYMDForPreset } from '../../utils/dateRangeFromFilter';
-import type { LocationItem } from '../../api/services/filter.service';
 
 function Navbar() {
   const { isSidebarCollapsed, setGlobalFilterData } = useAppContext();
@@ -12,12 +11,10 @@ function Navbar() {
   const [cameraOpen, setCameraOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
 
-  const [selectedLocation, setSelectedLocation] = useState<LocationItem | null>(
-    null
-  );
-  const { data: cameras = [] } = useFilterCameras(selectedLocation?.id ?? null);
+  const [selectedLocationIds, setSelectedLocationIds] = useState<string[]>([]);
+  const { data: cameras = [] } = useFilterCameras(selectedLocationIds.length > 0 ? selectedLocationIds : null);
   const [selectedDate, setSelectedDate] = useState('Today');
-  const [selectedCamera, setSelectedCamera] = useState('All Cameras');
+  const [selectedCameraIds, setSelectedCameraIds] = useState<string[]>([]);
   const [selectedAdmin, setSelectedAdmin] = useState('Admin');
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
@@ -38,20 +35,44 @@ function Navbar() {
     });
   }, []);
 
-  // Set initial location when locations load
+  // Set all locations selected when locations first load
   useEffect(() => {
-    if (locations.length > 0 && selectedLocation === null) {
-      const first = locations[0];
-      setSelectedLocation(first);
-      setGlobalFilterData((prev) => ({ ...prev, locationId: first.id }));
+    if (locations.length > 0 && selectedLocationIds.length === 0) {
+      setSelectedLocationIds(locations.map((loc) => loc.id));
     }
-  }, [locations, selectedLocation]);
+  }, [locations, selectedLocationIds.length]);
 
-  // Reset camera to "All Cameras" when location changes
+  // When location selection changes, reset camera selection so cameras list can reload for new selection
   useEffect(() => {
-    setSelectedCamera('All Cameras');
-    setGlobalFilterData((prev) => ({ ...prev, cameraId: null }));
-  }, [selectedLocation?.id]);
+    setSelectedCameraIds([]);
+  }, [selectedLocationIds.join(',')]);
+
+  useEffect(() => {
+    if (cameras.length > 0 && selectedCameraIds.length === 0) {
+      setSelectedCameraIds(cameras.map((c) => c.camera_id));
+    }
+  }, [cameras, selectedLocationIds.length]);
+
+  // Sync multi-select to global filter: locationId/cameraId for legacy; cameraIds for overview APIs
+  useEffect(() => {
+    setGlobalFilterData((prev) => {
+      const locationId =
+        selectedLocationIds.length === 0 || selectedLocationIds.length === locations.length
+          ? null
+          : selectedLocationIds[0];
+      const cameraId =
+        selectedCameraIds.length === 0 || selectedCameraIds.length === cameras.length
+          ? null
+          : selectedCameraIds[0];
+      const cameraIds = selectedCameraIds.length === 0 ? undefined : selectedCameraIds;
+      return {
+        ...prev,
+        locationId: locationId ?? undefined,
+        cameraId: cameraId ?? undefined,
+        cameraIds,
+      };
+    });
+  }, [selectedLocationIds, selectedCameraIds, locations.length, cameras.length]);
 
   // Update date and time every second
   useEffect(() => {
@@ -187,7 +208,7 @@ function Navbar() {
                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
               />
             </svg>
-            <span>{selectedLocation?.location ?? 'Select location'}</span>
+            <span>Selected location</span>
             <svg
               className="w-4 h-4 text-gray-400 shrink-0"
               fill="none"
@@ -204,23 +225,30 @@ function Navbar() {
           </button>
           {locationOpen && (
             <div className="absolute top-full left-0 mt-1.5 w-52 bg-[#28283B] border border-white/[0.08] rounded-xl shadow-xl z-50 py-1.5">
-              {locations.map((loc) => (
-                <button
-                  key={loc.id}
-                  onClick={() => {
-                    setSelectedLocation(loc);
-                    setGlobalFilterData((prev) => ({ ...prev, locationId: loc.id }));
-                    setLocationOpen(false);
-                  }}
-                  className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
-                    selectedLocation?.id === loc.id
-                      ? 'text-white bg-[#33334B]'
-                      : 'text-[#B0B0B0] hover:bg-[#33334B]/60'
-                  }`}
-                >
-                  {loc.location}
-                </button>
-              ))}
+              {locations.map((loc) => {
+                const isChecked = selectedLocationIds.includes(loc.id);
+                return (
+                  <label
+                    key={loc.id}
+                    className={`flex items-center gap-3 w-full cursor-pointer px-4 py-2.5 text-sm transition-colors ${
+                      isChecked ? 'text-white bg-[#33334B]' : 'text-[#B0B0B0] hover:bg-[#33334B]/60'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => {
+                        setSelectedLocationIds((prev) =>
+                          prev.includes(loc.id) ? prev.filter((id) => id !== loc.id) : [...prev, loc.id]
+                        );
+                      }}
+                      className="w-4 h-4 rounded border-gray-500 bg-gray-700 text-sky-500 focus:ring-sky-500 focus:ring-offset-0"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <span>{loc.location}</span>
+                  </label>
+                );
+              })}
               {locations.length === 0 && (
                 <div className="px-4 py-3 text-sm text-gray-500">
                   No locations available
@@ -359,41 +387,40 @@ function Navbar() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span>{selectedCamera}</span>
+            <span>Selected camera(s)</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
           {cameraOpen && (
             <div className="absolute top-full left-0 mt-1 w-52 bg-[#28283B] border border-white/[0.08] rounded-xl shadow-lg z-50 py-1 max-h-64 overflow-y-auto">
-              <button
-                onClick={() => {
-                  setSelectedCamera('All Cameras');
-                  setGlobalFilterData((prev) => ({ ...prev, cameraId: null }));
-                  setCameraOpen(false);
-                }}
-                className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
-                  selectedCamera === 'All Cameras' ? 'text-white bg-[#33334B]' : 'text-[#B0B0B0]'
-                }`}
-              >
-                All Cameras
-              </button>
-              {cameras.map((cam) => (
-                <button
-                  key={cam.camera_id}
-                  onClick={() => {
-                    setSelectedCamera(cam.name);
-                    setGlobalFilterData((prev) => ({ ...prev, cameraId: cam.camera_id }));
-                    setCameraOpen(false);
-                  }}
-                  className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors ${
-                    selectedCamera === cam.name ? 'text-white bg-[#33334B]' : 'text-[#B0B0B0]'
-                  }`}
-                >
-                  {cam.name}
-                </button>
-              ))}
-              {cameras.length === 0 && selectedLocation && (
+              {cameras.map((cam) => {
+                const isChecked = selectedCameraIds.includes(cam.camera_id);
+                return (
+                  <label
+                    key={cam.camera_id}
+                    className={`flex items-center gap-3 w-full cursor-pointer px-4 py-2 text-sm transition-colors ${
+                      isChecked ? 'text-white bg-[#33334B]' : 'text-[#B0B0B0] hover:bg-[#33334B]/60'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => {
+                        setSelectedCameraIds((prev) =>
+                          prev.includes(cam.camera_id)
+                            ? prev.filter((id) => id !== cam.camera_id)
+                            : [...prev, cam.camera_id]
+                        );
+                      }}
+                      className="w-4 h-4 rounded border-gray-500 bg-gray-700 text-sky-500 focus:ring-sky-500 focus:ring-offset-0"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <span>{cam.name}</span>
+                  </label>
+                );
+              })}
+              {cameras.length === 0 && selectedLocationIds.length > 0 && (
                 <div className="px-4 py-2 text-sm text-gray-500">
                   No cameras for this location
                 </div>

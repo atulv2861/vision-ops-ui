@@ -25,9 +25,10 @@ export const filterService = {
     return Array.isArray(data?.location) ? data.location : [];
   },
 
-  async getCameras(locationId: string): Promise<CameraItem[]> {
-    const { data } = await axiosInstance.get<CameraItem[] | { camera: CameraItem[] }>(
-      endpoints.filter.camera(locationId)
+  async getCameras(locationIds: string[]): Promise<CameraItem[]> {
+    const { data } = await axiosInstance.post<CameraItem[] | { camera: CameraItem[] }>(
+      endpoints.filter.cameras(),
+      { location_ids: locationIds }
     );
     if (Array.isArray(data)) return data;
     return Array.isArray((data as { camera?: CameraItem[] })?.camera)

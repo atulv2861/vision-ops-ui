@@ -10,7 +10,8 @@ export const queryKeys = {
   },
   filter: {
     locations: (clientId: string) => ['filter', 'locations', clientId] as const,
-    cameras: (locationId: string) => ['filter', 'cameras', locationId] as const,
+    cameras: (locationIds: string[]) =>
+      ['filter', 'cameras', ...locationIds] as const,
   },
   overview: {
     summaryCards: (filterKey: string) =>
@@ -22,5 +23,8 @@ export const queryKeys = {
     securityAccess: ['overview', 'securityAccess'] as const,
     cleaningCompliance: ['overview', 'cleaningCompliance'] as const,
     cameraNetworkStatus: ['overview', 'cameraNetworkStatus'] as const,
+  },
+  students: {
+    summary: (filterKey: string) => ['students', 'summary', filterKey] as const,
   },
 } as const;

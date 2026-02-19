@@ -14,10 +14,11 @@ function buildOverviewParams(filter: GlobalFilterData | null): OverviewFilterPar
     to,
     camera_id: filter?.cameraId ?? null,
     location_id: filter?.locationId ?? null,
+    camera_ids: filter?.cameraIds,
   };
 }
 
-/** API response shape for GET /overview/overview-cards */
+/** API response shape for POST /overview/overview-cards */
 export interface OverviewCardApiResponse {
   id: string;
   title: string;
@@ -35,7 +36,7 @@ export interface OverviewCardData {
   iconType?: string;
 }
 
-/** API response shape for GET /overview/ai-patterns */
+/** API response shape for POST /overview/ai-patterns */
 export interface AiPatternsApiResponseItem {
   id: string;
   title: string;
@@ -57,7 +58,7 @@ export interface AIPatternData {
   path: string;
 }
 
-/** API response shape for GET /overview/campus-traffic */
+/** API response shape for POST /overview/campus-traffic */
 export interface CampusTrafficApiResponseItem {
   time: string;
   students: number;
@@ -107,8 +108,9 @@ export interface CameraNetworkPoint {
 export const overviewService = {
   async getSummaryCards(filter: GlobalFilterData | null): Promise<OverviewCardData[]> {
     const params = buildOverviewParams(filter);
-    const { data } = await axiosInstance.get<OverviewCardApiResponse[]>(
-      endpoints.overview.overviewCards(params)
+    const { data } = await axiosInstance.post<OverviewCardApiResponse[]>(
+      endpoints.overview.overviewCards(params),
+      { camera_ids: params.camera_ids ?? [] }
     );
     return (Array.isArray(data) ? data : []).map((card) => ({
       id: card.id,
@@ -122,8 +124,9 @@ export const overviewService = {
 
   async getAiPatterns(filter: GlobalFilterData | null): Promise<AIPatternData[]> {
     const params = buildOverviewParams(filter);
-    const { data } = await axiosInstance.get<AiPatternsApiResponseItem[]>(
-      endpoints.overview.aiPatterns(params)
+    const { data } = await axiosInstance.post<AiPatternsApiResponseItem[]>(
+      endpoints.overview.aiPatterns(params),
+      { camera_ids: params.camera_ids ?? [] }
     );
     return (Array.isArray(data) ? data : []).map((item) => ({
       id: item.id,
@@ -137,8 +140,9 @@ export const overviewService = {
 
   async getCampusTraffic(filter: GlobalFilterData | null): Promise<CampusTrafficPoint[]> {
     const params = buildOverviewParams(filter);
-    const { data } = await axiosInstance.get<CampusTrafficApiResponseItem[]>(
-      endpoints.overview.campusTraffic(params)
+    const { data } = await axiosInstance.post<CampusTrafficApiResponseItem[]>(
+      endpoints.overview.campusTraffic(params),
+      { camera_ids: params.camera_ids ?? [] }
     );
     return (Array.isArray(data) ? data : []).map((item) => ({
       time: item.time,
@@ -157,16 +161,18 @@ export const overviewService = {
 
   async getSpaceUtilization(filter: GlobalFilterData | null): Promise<SpaceUtilizationPoint[]> {
     const params = buildOverviewParams(filter);
-    const { data } = await axiosInstance.get<SpaceUtilizationPoint[]>(
-      endpoints.overview.spaceUtilization(params)
+    const { data } = await axiosInstance.post<SpaceUtilizationPoint[]>(
+      endpoints.overview.spaceUtilization(params),
+      { camera_ids: params.camera_ids ?? [] }
     );
     return data;
   },
 
   async getSecurityAccess(filter: GlobalFilterData | null): Promise<SecurityAccessPoint[]> {
     const params = buildOverviewParams(filter);
-    const { data } = await axiosInstance.get<SecurityAccessPoint[]>(
-      endpoints.overview.securityAccess(params)
+    const { data } = await axiosInstance.post<SecurityAccessPoint[]>(
+      endpoints.overview.securityAccess(params),
+      { camera_ids: params.camera_ids ?? [] }
     );
     return data;
   },
@@ -181,8 +187,9 @@ export const overviewService = {
 
   async getCameraNetworkStatus(filter: GlobalFilterData | null): Promise<CameraNetworkPoint[]> {
     const params = buildOverviewParams(filter);
-    const { data } = await axiosInstance.get<CameraNetworkPoint[]>(
-      endpoints.overview.cameraNetworkStatus(params)
+    const { data } = await axiosInstance.post<CameraNetworkPoint[]>(
+      endpoints.overview.cameraNetworkStatus(params),
+      { camera_ids: params.camera_ids ?? [] }
     );
     return data;
   },
